@@ -1,0 +1,26 @@
+﻿@page "/AvailableRoomTypes"
+
+@using HotelFinal.Client.Services;
+@using HotelFinal.Shared;
+@inject HotelService service
+<h3>RoomType</h3>
+
+<h2>Here are the room types our hotel offers</h2>
+
+@foreach(var roomType in types)
+{
+    <h4>@roomType.RType</h4>
+}
+
+@code {
+    public List<RoomType> types { get; set; } = new();
+    public async Task GetAllRoomTypes()
+    {
+        types = await service.GetAllRoomTypesAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        types = await service.GetAllRoomTypesAsync();
+    }
+}

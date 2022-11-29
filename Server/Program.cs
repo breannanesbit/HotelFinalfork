@@ -1,7 +1,9 @@
+using HotelFinal.Shared;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = $"{builder.Configuration["Auth0:Domain"]}"
         };
     });
+
+var conStr = builder.Configuration.GetConnectionString("pg");
+builder.Services.AddDbContext<HotelContext>(options => options.UseNpgsql(conStr));
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

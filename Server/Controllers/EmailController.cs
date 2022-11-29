@@ -29,7 +29,7 @@ namespace HotelFinal.Server.Controllers
                         <h1>Header</h1>
                         <p>Your reservation has been made for November 26, 2022</p>
                     ")
-                   .WithTo(new SendContact("anthonythardman@gmail.com"))
+                   .WithTo(new SendContact("brebrenesbit02@gmail.com"))
                    .Build();
 
             // invoke API to send email
