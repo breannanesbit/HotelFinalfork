@@ -1,5 +1,7 @@
 ﻿@page "/reservationInfo"
-@inject HotelServices service
+@using Services;
+@using HotelFinal.Shared
+@inject HotelService service
 <h3>ReservationInfo</h3>
 
 <AuthorizeView Roles="Administrator">
@@ -9,13 +11,13 @@
 </AuthorizeView>
 
 @code {
-    public list<Reservation> reservationList { get; set; } = new();
-    public list<Guest> guestIds { get; set; } = new();
+    public List<Reservation> reservationList { get; set; } = new();
+    public List<Guest> guestIds { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        reservationList = await GetAllReservationAsync();
-        guestIds = await GetAllGuestAsync();
+        reservationList = await service.GetAllReservationAsync();
+        guestIds = await service.GetAllGuestAsync();
     }
 
 }

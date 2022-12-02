@@ -1,6 +1,7 @@
 ﻿using HotelFinal.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HotelFinal.Server.Controllers
 {

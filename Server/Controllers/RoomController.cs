@@ -23,7 +23,5 @@ namespace HotelFinal.Server.Controllers
         {
             return await hotelContext.RoomTypes.ToListAsync();
         }
-
-
     }
 }
