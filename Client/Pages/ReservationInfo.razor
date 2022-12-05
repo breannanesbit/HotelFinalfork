@@ -6,17 +6,49 @@
 
 <AuthorizeView Roles="Administrator">
     <Authorized>
-        
+        <table>
+            <thead>
+                <tr>
+                    <th>Guest</th>
+                    <th>Checkin date</th>
+                    <th>Checkout date</th>
+                    <th>Room Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var res in reservationroomList)
+                {
+                    //var reser = reservationList.Find(res.Reservation)
+                    <tr>
+                        <td>@res.Reservation.Guest.FirstName @res.Reservation.Guest.LastName</td>
+                        <td>checkin date:
+                            @res.Reservation.ExpectedCheckin</td>
+                        <td>checkout date:
+                            @res.Reservation.ExpectedCheckout
+                        </td>
+                        <td>
+                            @res.RoomType.RType
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+        </table>
     </Authorized>
 </AuthorizeView>
 
 @code {
     public List<Reservation> reservationList { get; set; } = new();
+    public List<ReservationRoom> reservationroomList { get; set; } = new();
+    public List<RoomType> roomtypeList { get; set; }
     public List<Guest> guestIds { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         reservationList = await service.GetAllReservationAsync();
+        reservationroomList = await service.GetAllReservationRoomAsync();
+        roomtypeList = await service.GetAllRoomTypesAsync();
         guestIds = await service.GetAllGuestAsync();
     }
 

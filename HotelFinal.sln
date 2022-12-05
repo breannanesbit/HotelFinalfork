@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HotelFinal.Client", "Client
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HotelFinal.Shared", "Shared\HotelFinal.Shared.csproj", "{4B736DE1-027A-4ED9-AE10-A050A6BBE4ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelFinal.Test", "HotelFinal.Test\HotelFinal.Test.csproj", "{1A5D1192-9EF1-4529-91F4-F33E2993F709}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HotelFinal.Test", "HotelFinal.Test\HotelFinal.Test.csproj", "{1A5D1192-9EF1-4529-91F4-F33E2993F709}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{48F17EC9-0821-43D6-8138-9792F8D606BE}"
 	ProjectSection(SolutionItems) = preProject

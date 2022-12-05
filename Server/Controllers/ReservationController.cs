@@ -15,10 +15,21 @@ namespace HotelFinal.Server.Controllers
             this.hotelContext = hotelContext;
         }
 
-        [HttpGet("/all")]
+        [HttpGet("/allreservation")]
         public async Task<List<Reservation>> AllReservationAsync()
         {
             return await hotelContext.Reservations.ToListAsync();
+        }
+        [HttpGet("/allreservationroom")]
+        public async Task<List<ReservationRoom>> AllReservationRoomsAsync()
+        {
+            return await hotelContext.ReservationRooms.ToListAsync();
+        }
+
+        [HttpGet("/allroomtype")]
+        public async Task<List<RoomType>> AllRoomstypeAsync()
+        {
+            return await hotelContext.RoomTypes.ToListAsync();
         }
 
         [HttpGet("/guest")]

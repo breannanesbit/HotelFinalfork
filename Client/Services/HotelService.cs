@@ -22,9 +22,17 @@ namespace HotelFinal.Client.Services
 
         public async Task<List<Reservation>> GetAllReservationAsync()
         {
-            return await httpClient.GetFromJsonAsync<List<Reservation>>("api/reservation/all");
+            return await httpClient.GetFromJsonAsync<List<Reservation>>("api/reservation/allreservation");
+        }
+        public async Task<List<ReservationRoom>> GetAllReservationRoomAsync()
+        {
+            return await httpClient.GetFromJsonAsync<List<ReservationRoom>>("api/reservation/allreservationroom");
         }
 
+        public async Task<List<RoomType>> GetAllRoomTypeAsync()
+        {
+            return await httpClient.GetFromJsonAsync<List<RoomType>>("api/reservation/allroomtype");
+        }
         public async Task<List<Guest>> GetAllGuestAsync()
         {
             return await httpClient.GetFromJsonAsync<List<Guest>>("api/reservation/guest");
