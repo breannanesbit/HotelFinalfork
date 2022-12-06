@@ -1,5 +1,6 @@
 ﻿@page "/BookingReservation"
-<h3>BookingReservationrazor</h3>
+@using Syncfusion.Blazor.Calendars
+<h3>Find A Room</h3>
 
 <AuthorizeView>
     <Authorized>
@@ -7,6 +8,8 @@
     </Authorized>
 </AuthorizeView>
 
+<SfDateRangePicker TValue="DateTime?" Placeholder="How Long Are You Staying?" ShowClearButton="true"></SfDateRangePicker>
+<i class="bi bi-search">Hello</i>
 @code {
 
 }

@@ -4,6 +4,7 @@ using HotelFinal.Client.Shared;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Syncfusion.Blazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -16,7 +17,8 @@ builder.Services.AddHttpClient("ServerAPI",
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
   .CreateClient("ServerAPI"));
 
-builder.Services.AddScoped<HotelService>();
+builder.Services.AddSyncfusionBlazor();
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NzQ5NjIzQDMyMzAyZTMzMmUzMGUxMDZ6ZlZRbzlKcDlqZmZEMkh0NExETnAyMHg4S216bkozb3lrcmE1Ym89");
 
 builder.Services.AddOidcAuthentication(options =>
 {

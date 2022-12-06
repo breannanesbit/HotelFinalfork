@@ -6,7 +6,7 @@
 
 <AuthorizeView Roles="Administrator">
     <Authorized>
-        <table>
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Guest</th>
@@ -47,7 +47,7 @@
     protected override async Task OnInitializedAsync()
     {
         reservationList = await service.GetAllReservationAsync();
-        reservationroomList = await service.GetAllReservationRoomAsync();
+        //reservationroomList = await service.GetAllReservationRoomAsync();
         roomtypeList = await service.GetAllRoomTypesAsync();
         guestIds = await service.GetAllGuestAsync();
     }
