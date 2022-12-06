@@ -20,6 +20,8 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
 builder.Services.AddSyncfusionBlazor();
 Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NzQ5NjIzQDMyMzAyZTMzMmUzMGUxMDZ6ZlZRbzlKcDlqZmZEMkh0NExETnAyMHg4S216bkozb3lrcmE1Ym89");
 
+builder.Services.AddScoped<HotelService>();
+
 builder.Services.AddOidcAuthentication(options =>
 {
     builder.Configuration.Bind("Auth0", options.ProviderOptions);

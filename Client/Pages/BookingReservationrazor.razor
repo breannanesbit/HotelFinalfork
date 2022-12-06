@@ -1,15 +1,40 @@
 ﻿@page "/BookingReservation"
+@using HotelFinal.Client.Services;
+@using HotelFinal.Shared;
 @using Syncfusion.Blazor.Calendars
+@inject HotelService hotelService;
 <h3>Find A Room</h3>
 
 <AuthorizeView>
     <Authorized>
 
+        <div class="row">
+            <div class="col-11 my-auto">
+                <SfDateRangePicker TValue="DateTime?"
+                                   Placeholder="How Long Are You Staying?"
+                                   ShowClearButton="true"
+                                   @bind-StartDate=Start
+                                   @bind-EndDate=End></SfDateRangePicker>
+            </div>
+            <div class="btn btn-primary col-1 text-center my-auto" @onclick="() => GetAvailableRooms(Start.Value, End.Value)">
+                <i class="bi bi-search"></i>
+            </div>
+        </div>
     </Authorized>
 </AuthorizeView>
 
-<SfDateRangePicker TValue="DateTime?" Placeholder="How Long Are You Staying?" ShowClearButton="true"></SfDateRangePicker>
-<i class="bi bi-search">Hello</i>
-@code {
+@foreach(var room in RoomTypes)
+{
+    @room.RType;
+}
 
+@code {
+    public DateTime? Start { get; set; }
+    public DateTime? End { get; set; }
+    public List<RoomType> RoomTypes { get; set; } = new();
+
+    public async Task GetAvailableRooms(DateTime start, DateTime end)
+    {
+        RoomTypes = await hotelService.GetAllRoomTypesAvailable(start, end);
+    }
 }

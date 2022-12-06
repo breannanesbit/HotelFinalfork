@@ -182,15 +182,7 @@ public partial class HotelContext : DbContext
             entity.Property(e => e.ReservationId).HasColumnName("reservation_id");
             entity.Property(e => e.RoomTypeId).HasColumnName("room_type_id");
 
-            entity.HasOne(d => d.Reservation).WithMany(p => p.ReservationRooms)
-                .HasForeignKey(d => d.ReservationId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("reservation_room_reservation_id_fkey");
-
-            entity.HasOne(d => d.RoomType).WithMany(p => p.ReservationRooms)
-                .HasForeignKey(d => d.RoomTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("reservation_room_room_type_id_fkey");
+          
         });
 
         modelBuilder.Entity<Room>(entity =>
@@ -204,11 +196,6 @@ public partial class HotelContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.RoomNumber).HasColumnName("room_number");
             entity.Property(e => e.RoomTypeId).HasColumnName("room_type_id");
-
-            entity.HasOne(d => d.RoomType).WithMany(p => p.Rooms)
-                .HasForeignKey(d => d.RoomTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("room_room_type_id_fkey");
         });
 
         modelBuilder.Entity<RoomCleaning>(entity =>
