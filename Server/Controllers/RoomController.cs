@@ -45,6 +45,8 @@ namespace HotelFinal.Server.Controllers
             return roomTypeCounts;
         }
 
+
+
         [HttpGet("availableRoomTypes/{start}/{end}")]
         public async Task<List<RoomType>> GetAvailableRoomTypes(DateTime start, DateTime end)
         {
@@ -54,23 +56,15 @@ namespace HotelFinal.Server.Controllers
                 .Where(r => r.ExpectedCheckin >= DateOnly.FromDateTime(start) && r.ExpectedCheckout <= DateOnly.FromDateTime(end))
                 .ToListAsync();
 
-            foreach (var res in reservations)
-            {
-                var reservationRooms = hotelContext.ReservationRooms.Where(r => r.ReservationId == res.Id).ToList();
+            roomTypeCounts = GetNumberOfAvalibleRooms(roomTypeCounts, reservations);
 
-                foreach (var room in reservationRooms)
-                {
-                    if (roomTypeCounts.ContainsKey(room.RoomTypeId))
-                    {
-                        roomTypeCounts[room.RoomTypeId]--;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-            }
+            List<RoomType> availableRoomsInDateRange = GetRoomTypesInDateRange(roomTypeCounts);
 
+            return availableRoomsInDateRange;
+        }
+
+        private List<RoomType> GetRoomTypesInDateRange(Dictionary<int, int> roomTypeCounts)
+        {
             List<RoomType> availableRoomsInDateRange = new();
 
             foreach (var roomType in roomTypeCounts)
@@ -81,8 +75,24 @@ namespace HotelFinal.Server.Controllers
                 }
             }
 
-
             return availableRoomsInDateRange;
+        }
+
+        private Dictionary<int, int> GetNumberOfAvalibleRooms(Dictionary<int, int> roomTypeCounts, List<Reservation> reservations)
+        {
+            foreach (var res in reservations)
+            {
+                var reservationRooms = hotelContext.ReservationRooms.Where(r => r.ReservationId == res.Id).ToList();
+
+                foreach (var room in reservationRooms)
+                {
+                    if (roomTypeCounts.ContainsKey(room.RoomTypeId))
+                    {
+                        roomTypeCounts[room.RoomTypeId]--;
+                    }
+                }
+            }
+            return roomTypeCounts;
         }
     }
 }

@@ -1,3 +1,5 @@
+using HotelFinal.Server.Controllers;
+
 namespace HotelFinal.Test
 {
     public class Tests
@@ -5,12 +7,13 @@ namespace HotelFinal.Test
         [SetUp]
         public void Setup()
         {
+            RoomController room = new();
         }
 
         [Test]
-        public void Test1()
+        public void TestGetAvailableRoomTypes()
         {
-            Assert.Pass();
+            var testreturn = 
         }
     }
 }
