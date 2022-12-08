@@ -13,6 +13,8 @@ namespace HotelFinal.Server.Controllers
     {
         private readonly HotelContext hotelContext;
 
+        public RoomController() { }
+
         public RoomController(HotelContext hotelContext)
         {
             this.hotelContext = hotelContext;
@@ -25,7 +27,7 @@ namespace HotelFinal.Server.Controllers
         }
 
         [HttpGet("roomTypeCounts")]
-        public async Task<Dictionary<int, int>> GetCountOfRoomTypesAsync()
+        public async Task<Dictionary<int, int>> GetCountOfRooms()
         {
             Dictionary<int, int> roomTypeCounts = new();
             var rooms = hotelContext.Rooms.ToList();
@@ -45,46 +47,30 @@ namespace HotelFinal.Server.Controllers
             return roomTypeCounts;
         }
 
-
-
         [HttpGet("availableRoomTypes/{start}/{end}")]
         public async Task<List<RoomType>> GetAvailableRoomTypes(DateTime start, DateTime end)
         {
-            Dictionary<int, int> roomTypeCounts = await GetCountOfRoomTypesAsync();
-            //Dictionary<RoomType, int> availableRooms = await GetCountOfRoomTypesAsync();
+            Dictionary<int, int> roomCounts = await GetCountOfRooms();
             var reservations = await hotelContext.Reservations
                 .Where(r => r.ExpectedCheckin >= DateOnly.FromDateTime(start) && r.ExpectedCheckout <= DateOnly.FromDateTime(end))
                 .ToListAsync();
+            var reservationRooms = await hotelContext.ReservationRooms.ToListAsync();
+            var roomTypes = await hotelContext.RoomTypes.ToListAsync();
 
-            roomTypeCounts = GetNumberOfAvalibleRooms(roomTypeCounts, reservations);
+            var availableRoomCounts = GetNumberOfAvalibleRooms(roomCounts, reservations, reservationRooms);
 
-            List<RoomType> availableRoomsInDateRange = GetRoomTypesInDateRange(roomTypeCounts);
-
-            return availableRoomsInDateRange;
-        }
-
-        private List<RoomType> GetRoomTypesInDateRange(Dictionary<int, int> roomTypeCounts)
-        {
-            List<RoomType> availableRoomsInDateRange = new();
-
-            foreach (var roomType in roomTypeCounts)
-            {
-                if (roomType.Value > 0)
-                {
-                    availableRoomsInDateRange.Add(hotelContext.RoomTypes.FirstOrDefault(r => r.Id == roomType.Key));
-                }
-            }
+            List<RoomType> availableRoomsInDateRange = FilterEmptyRoomTypes(availableRoomCounts, roomTypes);
 
             return availableRoomsInDateRange;
         }
 
-        private Dictionary<int, int> GetNumberOfAvalibleRooms(Dictionary<int, int> roomTypeCounts, List<Reservation> reservations)
+        public Dictionary<int, int> GetNumberOfAvalibleRooms(Dictionary<int, int> roomTypeCounts, List<Reservation> reservations, List<ReservationRoom> reservationRooms)
         {
             foreach (var res in reservations)
             {
-                var reservationRooms = hotelContext.ReservationRooms.Where(r => r.ReservationId == res.Id).ToList();
+                var resRooms = reservationRooms.Where(r => r.ReservationId == res.Id).ToList();
 
-                foreach (var room in reservationRooms)
+                foreach (var room in resRooms)
                 {
                     if (roomTypeCounts.ContainsKey(room.RoomTypeId))
                     {
@@ -94,5 +80,21 @@ namespace HotelFinal.Server.Controllers
             }
             return roomTypeCounts;
         }
+
+        public List<RoomType> FilterEmptyRoomTypes(Dictionary<int, int> roomTypeCounts, List<RoomType> roomTypes)
+        {
+            List<RoomType> availableRoomsInDateRange = new();
+
+            foreach (var roomType in roomTypeCounts)
+            {
+                if (roomType.Value > 0)
+                {
+                    availableRoomsInDateRange.Add(roomTypes.FirstOrDefault(r => r.Id == roomType.Key));
+                }
+            }
+
+            return availableRoomsInDateRange;
+        }
+
     }
 }

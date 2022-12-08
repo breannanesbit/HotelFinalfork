@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.8.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
@@ -18,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Server\HotelFinal.Server.csproj" />
+    <ProjectReference Include="..\Shared\HotelFinal.Shared.csproj" />
   </ItemGroup>
 
 </Project>
