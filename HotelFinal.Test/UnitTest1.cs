@@ -10,7 +10,9 @@ namespace HotelFinal.Test
         [SetUp]
         public void Setup()
         {
-            RoomController = new();
+            HotelContext hc = new();
+
+            RoomController = new(hc);
         }
 
         [Test]
@@ -70,7 +72,7 @@ namespace HotelFinal.Test
                 },
             };
 
-            var availableRooms = RoomController.GetNumberOfAvalibleRooms(roomTypeCounts, reservations, reservationRooms);
+            var availableRooms = RoomController.GetAvalibleRoomCounts(roomTypeCounts, reservations, reservationRooms);
             availableRooms.Should().Equal(
                 new Dictionary<int, int>()
                 {

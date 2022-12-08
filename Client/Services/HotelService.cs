@@ -38,7 +38,7 @@ namespace HotelFinal.Client.Services
             return await httpClient.GetFromJsonAsync<List<Guest>>("api/reservation/guest");
         }
 
-        public async Task<List<RoomType>> GetAllRoomTypesAvailable(DateTime start, DateTime end)
+        public async Task<List<RoomType>> GetAvailableRoomTypesAsync(DateTime start, DateTime end)
         {
             return await httpClient.GetFromJsonAsync<List<RoomType>>($"/api/room/availableRoomTypes/2022-12-1/2022-12-2");
         }

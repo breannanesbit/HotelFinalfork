@@ -13,8 +13,6 @@ namespace HotelFinal.Server.Controllers
     {
         private readonly HotelContext hotelContext;
 
-        public RoomController() { }
-
         public RoomController(HotelContext hotelContext)
         {
             this.hotelContext = hotelContext;
@@ -57,14 +55,15 @@ namespace HotelFinal.Server.Controllers
             var reservationRooms = await hotelContext.ReservationRooms.ToListAsync();
             var roomTypes = await hotelContext.RoomTypes.ToListAsync();
 
-            var availableRoomCounts = GetNumberOfAvalibleRooms(roomCounts, reservations, reservationRooms);
+            var availableRoomCounts = GetAvalibleRoomCounts(roomCounts, reservations, reservationRooms);
 
             List<RoomType> availableRoomsInDateRange = FilterEmptyRoomTypes(availableRoomCounts, roomTypes);
 
             return availableRoomsInDateRange;
         }
 
-        public Dictionary<int, int> GetNumberOfAvalibleRooms(Dictionary<int, int> roomTypeCounts, List<Reservation> reservations, List<ReservationRoom> reservationRooms)
+        [NonAction]
+        public Dictionary<int, int> GetAvalibleRoomCounts(Dictionary<int, int> roomTypeCounts, List<Reservation> reservations, List<ReservationRoom> reservationRooms)
         {
             foreach (var res in reservations)
             {
@@ -81,6 +80,7 @@ namespace HotelFinal.Server.Controllers
             return roomTypeCounts;
         }
 
+        [NonAction]
         public List<RoomType> FilterEmptyRoomTypes(Dictionary<int, int> roomTypeCounts, List<RoomType> roomTypes)
         {
             List<RoomType> availableRoomsInDateRange = new();

@@ -1,40 +1,49 @@
 ﻿@page "/BookingReservation"
-@using HotelFinal.Client.Services;
 @using HotelFinal.Shared;
+@using HotelFinal.Client.Services
 @using Syncfusion.Blazor.Calendars
-@inject HotelService hotelService;
+@using HotelFinal.Client.Components
+@inject HotelService hotelService
 <h3>Find A Room</h3>
 
 <AuthorizeView>
     <Authorized>
 
-        <div class="row">
-            <div class="col-11 my-auto">
-                <SfDateRangePicker TValue="DateTime?"
-                                   Placeholder="How Long Are You Staying?"
-                                   ShowClearButton="true"
-                                   @bind-StartDate=Start
-                                   @bind-EndDate=End></SfDateRangePicker>
-            </div>
-            <div class="btn btn-primary col-1 text-center my-auto" @onclick="() => GetAvailableRooms(Start.Value, End.Value)">
-                <i class="bi bi-search"></i>
-            </div>
-        </div>
     </Authorized>
 </AuthorizeView>
 
-@foreach(var room in RoomTypes)
+<div class="row mb-2">
+    <div class="col-11 my-auto">
+        <SfDateRangePicker TValue="DateTime?"
+            Placeholder="How Long Are You Staying?"
+            ShowClearButton="true"
+            @bind-StartDate=Checkin
+            @bind-EndDate=Checkout />
+    </div>
+    <div class="col-1 btn btn-primary my-auto" @onclick=GetAvailableRoomTypes>
+        <i class="bi bi-search"></i>
+    </div>
+</div>
+@if (RoomTypes is not null)
 {
-    @room.RType;
+    <div class="row">
+        @foreach (var type in RoomTypes)
+        {
+            <div class="col-3">
+                <RoomTypeCard RoomType=type></RoomTypeCard>
+            </div>
+        }
+    </div>
 }
 
-@code {
-    public DateTime? Start { get; set; }
-    public DateTime? End { get; set; }
-    public List<RoomType> RoomTypes { get; set; } = new();
 
-    public async Task GetAvailableRooms(DateTime start, DateTime end)
+@code {
+    public DateTime? Checkin { get; set; }
+    public DateTime? Checkout { get; set; }
+    public List<RoomType> RoomTypes { get; set; }
+
+    public async Task GetAvailableRoomTypes()
     {
-        RoomTypes = await hotelService.GetAllRoomTypesAvailable(start, end);
+        RoomTypes = await hotelService.GetAvailableRoomTypesAsync(Checkin.Value, Checkout.Value);
     }
 }
