@@ -17,6 +17,12 @@ namespace HotelFinal.Server.Controllers
         {
             this.hotelContext = hotelContext;
         }
+
+        [HttpGet("availableRoom/{start}/{end}")]
+        public async Task<List<RentalRoom>> GetAvailableRooms(DateTime start, DateTime end)
+        {
+            return await hotelContext.RentalRooms.Include(r => r.Rental).Where(r => r.Rental.Checkin >= DateOnly.FromDateTime(start) && r.Rental.Checkout <= DateOnly.FromDateTime(end)).Include(r => r.RoomCleaning).ThenInclude(r => r.Room).ToListAsync();
+        }
     
         [HttpGet("roomtype")]
         public async Task<List<RoomType>> GetRoomTypesAsync()

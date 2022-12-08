@@ -1,6 +1,36 @@
 ﻿@page "/Occupied_rooms"
-<h3>OccupiedRooms</h3>
+@using HotelFinal.Client.Services;
+@using HotelFinal.Shared;
+@using Syncfusion.Blazor.Calendars
+@inject HotelService service
+
+<h3>Occupied Rooms</h3>
+
+<div class="row mb-2">
+    <div class="col-11 my-auto">
+        <SfDateRangePicker TValue="DateTime?"
+            Placeholder="How Long Are You Staying?"
+            ShowClearButton="true"
+            @bind-StartDate=Start
+            @bind-EndDate=End />
+    </div>
+    <div class="col-1 btn btn-primary my-auto" @onclick=GetAvaibleRooms>
+        <i class="bi bi-search"></i>
+    </div>
+</div>
+
+@foreach(var r in RoomOccupied)
+{
+    <li>@r.RoomNumber</li>
+}
 
 @code {
+    public DateTime? Start { get; set; }
+    public DateTime? End { get; set; }
+    public List<Room> RoomOccupied { get; set; } = new();
 
+    protected async Task GetAvaibleRooms()
+    {
+        RoomOccupied = await service.GetAvailableRooms(Start.Value, End.Value);
+    }
 }

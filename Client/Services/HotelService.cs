@@ -29,10 +29,10 @@ namespace HotelFinal.Client.Services
             return await httpClient.GetFromJsonAsync<List<ReservationRoom>>("api/reservation/allreservationroom");
         }
 
-        public async Task<List<RoomType>> GetAllRoomTypeAsync()
+        /*public async Task<List<RoomType>> GetAllRoomTypeAsync()
         {
             return await httpClient.GetFromJsonAsync<List<RoomType>>("api/reservation/allroomtype");
-        }
+        }*/
         public async Task<List<Guest>> GetAllGuestAsync()
         {
             return await httpClient.GetFromJsonAsync<List<Guest>>("api/reservation/guest");
@@ -40,7 +40,12 @@ namespace HotelFinal.Client.Services
 
         public async Task<List<RoomType>> GetAvailableRoomTypesAsync(DateTime start, DateTime end)
         {
-            return await httpClient.GetFromJsonAsync<List<RoomType>>($"/api/room/availableRoomTypes/2022-12-1/2022-12-2");
+            return await httpClient.GetFromJsonAsync<List<RoomType>>($"/api/room/availableRoomTypes/start/end");
+        }
+
+        public async Task<List<Room>> GetAvailableRooms(DateTime start, DateTime end)
+        {
+            return await httpClient.GetFromJsonAsync<List<Room>>($"/api/room/availableRoom/start/end");
         }
     }
 }

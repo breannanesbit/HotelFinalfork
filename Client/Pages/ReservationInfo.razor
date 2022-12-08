@@ -18,7 +18,7 @@
             <tbody>
                 @foreach(var res in reservationroomList)
                 {
-                    //var reser = reservationList.Find(res.Reservation)
+                    var reser = reservationList.Find(res.Reservation);
                     <tr>
                         <td>@res.Reservation.Guest.FirstName @res.Reservation.Guest.LastName</td>
                         <td>checkin date:
