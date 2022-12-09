@@ -10,9 +10,12 @@ namespace HotelFinal.Server.Controllers
     public class ReservationController : ControllerBase
     {
         private readonly HotelContext hotelContext;
-        public ReservationController(HotelContext hotelContext)
+        private readonly ILogger<ReservationController> ilogger;
+
+        public ReservationController(HotelContext hotelContext, ILogger<ReservationController> ilogger)
         {
             this.hotelContext = hotelContext;
+            this.ilogger = ilogger;
         }
 
         [HttpPost]
@@ -27,19 +30,21 @@ namespace HotelFinal.Server.Controllers
         {
             return await hotelContext.Reservations.ToListAsync();
         }
-        [HttpGet("/allreservationroom")]
+        [HttpGet("allreservationroom")]
         public async Task<List<ReservationRoom>> AllReservationRoomsAsync()
         {
-            return await hotelContext.ReservationRooms.ToListAsync();
+            var list =  await hotelContext.ReservationRooms.Include(r => r.Reservation).Include(r => r.RoomType).ToListAsync();
+            ilogger.LogDebug("made it to the reservationroom");
+            return list;
         }
 
-        [HttpGet("/allroomtype")]
+        [HttpGet("allroomtype")]
         public async Task<List<RoomType>> AllRoomstypeAsync()
         {
             return await hotelContext.RoomTypes.ToListAsync();
         }
 
-        [HttpGet("/guest")]
+        [HttpGet("guest")]
         public async Task<List<Guest>> AllGuestsAsync()
         {
             return await hotelContext.Guests.ToListAsync();

@@ -3,6 +3,7 @@ using HotelFinal.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HotelFinal.Server.Controllers
 {
@@ -12,10 +13,26 @@ namespace HotelFinal.Server.Controllers
     public class RoomController : ControllerBase
     {
         private readonly HotelContext hotelContext;
+        private readonly ILogger<RoomController> ilogger;
 
-        public RoomController(HotelContext hotelContext)
+        public RoomController(HotelContext hotelContext, ILogger<RoomController> ilogger)
         {
             this.hotelContext = hotelContext;
+            this.ilogger = ilogger;
+        }
+
+        [HttpGet("cleanrooms")]
+        public async Task<List<RoomCleaningInfo>> AllCleanRooms()
+        {
+            return await hotelContext.RoomCleaningInfos.ToListAsync();
+        }
+
+        [HttpGet("allreservationroom")]
+        public async Task<List<ReservationRoom>> AllReservationRoomsAsync()
+        {
+            var list = await hotelContext.ReservationRooms.Include(r => r.Reservation).Include(r => r.RoomType).ToListAsync();
+            ilogger.LogDebug("made it to the reservationroom");
+            return list;
         }
 
         [HttpGet("availableRoom/{start}/{end}")]

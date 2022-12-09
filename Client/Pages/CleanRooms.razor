@@ -1,6 +1,50 @@
 ﻿@page "/cleanRooms"
+@using HotelFinal.Client.Services;
+@using HotelFinal.Shared;
+@inject HotelService service
+
 <h3>CleanRooms</h3>
 
-@code {
+<AuthorizeView Roles="Administrator">
+    <Authorized>
+        /
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date cleaned</th>
+                    <th>Room Number</th>
+                    <th>Room Type</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var room in clean)
+                {
+                    //var reser = reservationList.Find(res.Reservation);
+                    <tr>
+                        <td>@room.DateCleaned</td>
+                        <td>
+                            @room.RoomNumber
+                        </td>
+                        <td>
+                            @room.RoomType
+                        </td>
+                        <td>
+                            @room.Staff
+                        </td>
 
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    public List<RoomCleaningInfo> clean { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        clean = await service.GetCleanRoomsAsync();
+    }
 }
