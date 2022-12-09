@@ -32,5 +32,6 @@
     protected async Task GetAvaibleRooms()
     {
         RoomOccupied = await service.GetAvailableRooms(Start.Value, End.Value);
+
     }
 }
