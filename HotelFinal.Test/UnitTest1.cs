@@ -1,5 +1,6 @@
 using FluentAssertions;
 using HotelFinal.Server.Controllers;
+using HotelFinal.Server;
 using HotelFinal.Shared;
 using Microsoft.Extensions.Logging;
 
