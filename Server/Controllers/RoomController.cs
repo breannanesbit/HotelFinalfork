@@ -30,7 +30,7 @@ namespace HotelFinal.Server.Controllers
         [HttpGet("allreservationroom")]
         public async Task<List<ReservationRoom>> AllReservationRoomsAsync()
         {
-            var list = await hotelContext.ReservationRooms.Include(r => r.Reservation).Include(r => r.RoomType).ToListAsync();
+            var list = await hotelContext.ReservationRooms.Include(r => r.Reservation).ThenInclude(r => r.Guest).Include(r => r.RoomType).ToListAsync();
             ilogger.LogDebug("made it to the reservationroom");
             return list;
         }

@@ -14,16 +14,35 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="AvailableRoomTypes">
-                <span class="oi oi-plus" aria-hidden="true"></span> Rooms
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="BookingReservation">
-                <i class="bi bi-search"></i>
-            </NavLink>
-        </div>
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="BookingReservation">
+                        <i class="bi bi-search me-2"></i> Find a Room
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Administrator">
+            <Authorized>
+                <hr class="text-white mx-4"/>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="Occupiedrooms">
+                        <i class="bi bi-list-stars me-2"></i> Occupied Room Report
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="cleanRooms">
+                        <i class="bi bi-list-check me-2"></i> Room Cleaning Report
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="reservationInfo">
+                        <i class="bi bi-list-task me-2"></i> Reservation Report
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
     </nav>
 </div>
 

@@ -5,6 +5,7 @@
 @using HotelFinal.Client.Components
 @inject HotelService hotelService
 @inject UserService userService
+@inject NavigationManager navManager;
 <h3>Find A Room</h3>
 
 <AuthorizeView>
@@ -78,6 +79,26 @@
                 ExpectedCheckout = DateOnly.FromDateTime(Checkout.Value),
             };
 
-        await hotelService.PostReservationsAsync(reservation);
+        List<RoomType> roomTypes = new();
+        roomTypes.Add(roomType);
+
+        ReservationPostObject rpo = new()
+            {
+                Reservation = reservation,
+                RoomTypes = roomTypes
+            };
+
+        await hotelService.PostReservationsAsync(rpo);
+
+        ReservationConfirmationObject rco = new()
+        {
+            UserEmail = userEmail,
+            Checkin = Checkin.Value.ToString("yyyy-MM-dd"),
+            Checkout = Checkout.Value.ToString("yyyy-MM-dd")
+        };
+
+        await hotelService.SendReservationConfirmation(rco);
+
+        navManager.NavigateTo("/ReservationConfirmation");
     }
 }

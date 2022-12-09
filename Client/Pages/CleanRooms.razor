@@ -7,7 +7,6 @@
 
 <AuthorizeView Roles="Administrator">
     <Authorized>
-        /
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -18,7 +17,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var room in clean)
+                @foreach (var room in (clean ?? new List<RoomCleaningInfo>()))
                 {
                     //var reser = reservationList.Find(res.Reservation);
                     <tr>
@@ -35,7 +34,6 @@
 
                     </tr>
                 }
-
             </tbody>
         </table>
     </Authorized>

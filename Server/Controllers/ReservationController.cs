@@ -19,10 +19,21 @@ namespace HotelFinal.Server.Controllers
         }
 
         [HttpPost]
-        public async Task PostReservationAsync(Reservation reservation)
+        public async Task PostReservationAsync(ReservationPostObject rpo)
         {
-            await hotelContext.Reservations.AddAsync(reservation);
+            await hotelContext.Reservations.AddAsync(rpo.Reservation);
             await hotelContext.SaveChangesAsync();
+
+            foreach (var type in rpo.RoomTypes)
+            {
+                var room = new ReservationRoom()
+                {
+                    ReservationId = rpo.Reservation.Id.Value,
+                    RoomTypeId = type.Id,
+                };
+                await hotelContext.ReservationRooms.AddAsync(room);
+                await hotelContext.SaveChangesAsync();
+            }
         }
 
         [HttpGet("/allreservation")]

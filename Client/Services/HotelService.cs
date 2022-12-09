@@ -62,14 +62,19 @@ namespace HotelFinal.Client.Services
             await httpClient.PostAsJsonAsync<Guest>("/api/guest", guest);
         }
 
-        public async Task PostReservationsAsync(Reservation reservation)
+        public async Task PostReservationsAsync(ReservationPostObject rpo)
         {
-            await httpClient.PostAsJsonAsync<Reservation>("/api/reservation", reservation);
+            await httpClient.PostAsJsonAsync<ReservationPostObject>("/api/reservation", rpo);
         }
 
         public async Task<List<RoomCleaningInfo>> GetCleanRoomsAsync()
         {
             return await httpClient.GetFromJsonAsync<List<RoomCleaningInfo>>($"/api/room/cleanrooms");
+        }
+
+        public async Task SendReservationConfirmation(ReservationConfirmationObject rco)
+        {
+            await httpClient.PostAsJsonAsync<ReservationConfirmationObject>("/api/email/reservationConfirmation", rco);
         }
     }
 }
