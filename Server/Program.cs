@@ -1,9 +1,11 @@
+using HotelFinal.Server;
 using HotelFinal.Shared;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +25,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 var conStr = builder.Configuration.GetConnectionString("pg");
 builder.Services.AddDbContext<HotelContext>(options => options.UseNpgsql(conStr));
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddRazorPages();
 builder.Services.AddSwaggerGen();
 

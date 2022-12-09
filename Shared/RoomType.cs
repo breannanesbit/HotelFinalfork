@@ -12,4 +12,8 @@ public partial class RoomType
     public decimal BaseRentalRate { get; set; }
 
     public bool Smoking { get; set; }
+
+    public virtual ICollection<ReservationRoom> ReservationRooms { get; } = new List<ReservationRoom>();
+
+    public virtual ICollection<Room> Rooms { get; } = new List<Room>();
 }

@@ -15,6 +15,13 @@ namespace HotelFinal.Server.Controllers
             this.hotelContext = hotelContext;
         }
 
+        [HttpPost]
+        public async Task PostReservationAsync(Reservation reservation)
+        {
+            await hotelContext.Reservations.AddAsync(reservation);
+            await hotelContext.SaveChangesAsync();
+        }
+
         [HttpGet("/allreservation")]
         public async Task<List<Reservation>> AllReservationAsync()
         {

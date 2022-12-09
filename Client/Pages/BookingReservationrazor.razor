@@ -4,6 +4,7 @@
 @using Syncfusion.Blazor.Calendars
 @using HotelFinal.Client.Components
 @inject HotelService hotelService
+@inject UserService userService
 <h3>Find A Room</h3>
 
 <AuthorizeView>
@@ -26,10 +27,10 @@
 </div>
 @if (RoomTypes is not null)
 {
-    <div class="row">
+    <div class="row" >
         @foreach (var type in RoomTypes)
         {
-            <div class="col-3">
+            <div class="col-3" @onclick="() => ReserveRoom(type)">
                 <RoomTypeCard RoomType=type></RoomTypeCard>
             </div>
         }
@@ -45,5 +46,38 @@
     public async Task GetAvailableRoomTypes()
     {
         RoomTypes = await hotelService.GetAvailableRoomTypesAsync(Checkin.Value, Checkout.Value);
+    }
+
+    public async Task ReserveRoom(RoomType roomType)
+    {
+        var userId = await userService.GetUserId();
+        var userEmail = await userService.GetUserEmail();
+        Guest guest;
+
+        try
+        {
+            guest = await hotelService.GetGuestAsync(userId, userEmail);
+        }
+        catch
+        {
+            guest = new()
+                {
+                    FirstName = userId,
+                    LastName = userEmail
+                };
+
+            await hotelService.PostGuestAsync(guest);
+            guest = await hotelService.GetGuestAsync(userId, userEmail);
+        }
+
+
+        Reservation reservation = new()
+            {
+                GuestId = guest.Id,
+                ExpectedCheckin = DateOnly.FromDateTime(Checkin.Value),
+                ExpectedCheckout = DateOnly.FromDateTime(Checkout.Value),
+            };
+
+        await hotelService.PostReservationsAsync(reservation);
     }
 }

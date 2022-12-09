@@ -21,6 +21,7 @@ builder.Services.AddSyncfusionBlazor();
 Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NzQ5NjIzQDMyMzAyZTMzMmUzMGUxMDZ6ZlZRbzlKcDlqZmZEMkh0NExETnAyMHg4S216bkozb3lrcmE1Ym89");
 
 builder.Services.AddScoped<HotelService>();
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddOidcAuthentication(options =>
 {

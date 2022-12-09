@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using HotelFinal.Shared;
 
-namespace HotelFinal.Shared;
+namespace HotelFinal.Server;
 
 public partial class HotelContext : DbContext
 {
@@ -44,6 +45,10 @@ public partial class HotelContext : DbContext
     public virtual DbSet<RoomType> RoomTypes { get; set; }
 
     public virtual DbSet<Staff> Staff { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql("host=localhost; database=hotel; user id=hotel; password=password");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -182,7 +187,15 @@ public partial class HotelContext : DbContext
             entity.Property(e => e.ReservationId).HasColumnName("reservation_id");
             entity.Property(e => e.RoomTypeId).HasColumnName("room_type_id");
 
-          
+            entity.HasOne(d => d.Reservation).WithMany(p => p.ReservationRooms)
+                .HasForeignKey(d => d.ReservationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("reservation_room_reservation_id_fkey");
+
+            entity.HasOne(d => d.RoomType).WithMany(p => p.ReservationRooms)
+                .HasForeignKey(d => d.RoomTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("reservation_room_room_type_id_fkey");
         });
 
         modelBuilder.Entity<Room>(entity =>
@@ -196,6 +209,11 @@ public partial class HotelContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.RoomNumber).HasColumnName("room_number");
             entity.Property(e => e.RoomTypeId).HasColumnName("room_type_id");
+
+            entity.HasOne(d => d.RoomType).WithMany(p => p.Rooms)
+                .HasForeignKey(d => d.RoomTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("room_room_type_id_fkey");
         });
 
         modelBuilder.Entity<RoomCleaning>(entity =>
