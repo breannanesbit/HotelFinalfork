@@ -1,6 +1,7 @@
 using FluentAssertions;
 using HotelFinal.Server.Controllers;
 using HotelFinal.Shared;
+using Microsoft.Extensions.Logging;
 
 namespace HotelFinal.Test
 {
@@ -10,9 +11,10 @@ namespace HotelFinal.Test
         [SetUp]
         public void Setup()
         {
+           // var ilog = new ILogger<RoomController>();
             HotelContext hc = new();
 
-            RoomController = new(hc);
+            RoomController = new(hc,null);
         }
 
         [Test]

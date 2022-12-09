@@ -6,7 +6,7 @@
 
 <AuthorizeView Roles="Administrator">
     <Authorized>
-        <table class="table table-striped">
+        /<table class="table table-striped">
             <thead>
                 <tr>
                     <th>Guest</th>
@@ -18,9 +18,9 @@
             <tbody>
                 @foreach(var res in reservationroomList)
                 {
-                    var reser = reservationList.Find(res.Reservation);
+                    //var reser = reservationList.Find(res.Reservation);
                     <tr>
-                        <td>@res.Reservation.Guest.FirstName @res.Reservation.Guest.LastName</td>
+                        <td>@res.Reservation.GuestId</td>
                         <td>checkin date:
                             @res.Reservation.ExpectedCheckin</td>
                         <td>checkout date:
@@ -41,14 +41,14 @@
 @code {
     public List<Reservation> reservationList { get; set; } = new();
     public List<ReservationRoom> reservationroomList { get; set; } = new();
-    public List<RoomType> roomtypeList { get; set; }
+    public List<RoomType> roomtypeList { get; set; } = new();
     public List<Guest> guestIds { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        reservationList = await service.GetAllReservationAsync();
-        //reservationroomList = await service.GetAllReservationRoomAsync();
-        roomtypeList = await service.GetAllRoomTypesAsync();
+        //reservationList = await service.GetAllReservationAsync();
+        reservationroomList = await service.GetAllReservationRoomAsync();
+        //roomtypeList = await service.GetAllRoomTypesAsync();
         guestIds = await service.GetAllGuestAsync();
     }
 
