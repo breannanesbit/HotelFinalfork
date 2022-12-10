@@ -1,0 +1,121 @@
+﻿@page "/RoomCleaning"
+@using HotelFinal.Client.Services;
+@using HotelFinal.Shared;
+@using System.ComponentModel.DataAnnotations;
+@inject HotelService hotelService;
+@inject UserService userService;
+
+@if (finishedInitialization)
+{
+    <EditForm EditContext="editContext" OnSubmit=OnSubmit>
+        <ValidationSummary/>
+        <div>
+            <label class="form-label">
+                Room Number:
+                <input class="form-control" type="number" @bind=RCM.RoomNumber/>
+            </label>
+            <label class="form-label">
+                <select class="form-select my-2" @bind="RCM.CleaningId">
+                    <option value=null>@string.Empty</option>
+                    @foreach (var type in CleaningTypes)
+                    {
+                        <option value=@type.Id>@type.Type</option>
+                    }
+                </select>
+            </label>
+            <button class="btn btn-primary" type="submit" disabled=@submitDisabled>Submit</button>
+        </div>
+    </EditForm>
+}
+else
+{
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only"></span>
+    </div>
+}
+
+@code {
+    public class RoomCleaningModel
+    {
+        public int RoomNumber { get; set; }
+
+        public int? CleaningId { get; set; } = null;
+    }
+
+    public RoomCleaningModel RCM { get; set; } = new();
+
+    public List<CleaningType> CleaningTypes { get; set; } = new();
+
+
+
+    private bool submitDisabled = false;
+    private bool finishedInitialization = false;
+    private EditContext editContext;
+    private ValidationMessageStore validationMessageStore;
+
+    protected override async Task OnInitializedAsync()
+    {
+        CleaningTypes = await hotelService.GetCleaningTypesAsync();
+        editContext = new EditContext(RCM);
+        validationMessageStore = new ValidationMessageStore(editContext);
+        finishedInitialization = true;
+    }
+
+    public async Task OnSubmit()
+    {
+        validationMessageStore.Clear();
+        if (!(await hotelService.IsValidRoom(RCM.RoomNumber)))
+        {
+            validationMessageStore.Add(() => RCM.RoomNumber, "Room number must be valid.");
+        }
+        if (RCM.CleaningId is null)
+        {
+            validationMessageStore.Add(() => RCM.CleaningId, "Cleaning type must be valid.");
+        }
+        editContext.NotifyValidationStateChanged();
+
+        if (!editContext.GetValidationMessages().Any())
+        {
+            submitDisabled = true;
+
+            var room = await hotelService.GetRoomFromRoomNumberAsync(RCM.RoomNumber);
+            var userId = await userService.GetUserId();
+            var userEmail = await userService.GetUserEmail();
+            Staff staff;
+
+            try
+            {
+                staff = await hotelService.GetStaffAsync(userId, userEmail);
+            }
+            catch
+            {
+                staff = new()
+                    {
+                        FirstName = userId,
+                        LastName = userEmail
+                    };
+
+                await hotelService.PostStaffAsync(staff);
+                staff = await hotelService.GetStaffAsync(userId, userEmail);
+            }
+
+
+            var roomCleaning = new RoomCleaning()
+            {
+                CleaningTypeId = RCM.CleaningId.Value,
+                RoomId = room.Id,
+                StaffId = staff.Id,
+                DateCleaned = DateOnly.FromDateTime(DateTime.Now)
+            };
+
+            await hotelService.RecordRoomCleaning(roomCleaning);
+
+            RCM = new();
+            submitDisabled = false;
+        }
+        else
+        {
+            
+        }
+    }
+}

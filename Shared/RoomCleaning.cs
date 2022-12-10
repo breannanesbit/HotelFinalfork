@@ -5,7 +5,7 @@ namespace HotelFinal.Shared;
 
 public partial class RoomCleaning
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     public DateOnly DateCleaned { get; set; }
 
@@ -15,11 +15,11 @@ public partial class RoomCleaning
 
     public int StaffId { get; set; }
 
-    public virtual CleaningType CleaningType { get; set; } = null!;
+    public virtual CleaningType? CleaningType { get; set; } = null!;
 
     public virtual RentalRoom? RentalRoom { get; set; }
 
-    public virtual Room Room { get; set; } = null!;
+    public virtual Room? Room { get; set; } = null!;
 
-    public virtual Staff Staff { get; set; } = null!;
+    public virtual Staff? Staff { get; set; } = null!;
 }

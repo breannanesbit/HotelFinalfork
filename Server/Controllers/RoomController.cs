@@ -22,6 +22,25 @@ namespace HotelFinal.Server.Controllers
             this.ilogger = ilogger;
         }
 
+        [HttpGet("valid/{roomNumber}")]
+        public async Task<bool> IsValidRoom(int roomNumber)
+        {
+            var room = await hotelContext.Rooms.FirstOrDefaultAsync(r => r.RoomNumber == roomNumber);
+
+            if (room == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        [HttpGet("{roomNumber}")]
+        public async Task<Room> GetRoomFromRoomNumber(int roomNumber)
+        {
+            return await hotelContext.Rooms.FirstOrDefaultAsync(r => r.RoomNumber == roomNumber);
+        }
+
         [AllowAnonymous]
         [HttpGet("roomtype")]
         public async Task<List<RoomType>> GetRoomTypesAsync()

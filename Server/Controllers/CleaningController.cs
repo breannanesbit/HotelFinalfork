@@ -16,10 +16,18 @@ namespace HotelFinal.Server.Controllers
             this.hotelContext = hotelContext;
         }
 
+        [HttpPost]
+        public async Task RecordRoomCleaning(RoomCleaning roomCleaning)
+        {
+            await hotelContext.RoomCleanings.AddAsync(roomCleaning);
+            await hotelContext.SaveChangesAsync();
+        }
+
         [HttpGet("types")]
         public async Task<List<CleaningType>> GetCleaningTypesAsync()
         {
             return await hotelContext.CleaningTypes.ToListAsync();
         }
+
     }
 }
