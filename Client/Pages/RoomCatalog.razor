@@ -1,0 +1,28 @@
+﻿@page "/RoomCatalog"
+@using HotelFinal.Client.Components
+@using HotelFinal.Client.Services
+@using HotelFinal.Shared;
+@inject HotelService hotelService;
+<h3>Rooms</h3>
+
+
+@if (RoomTypes is not null)
+{
+    <div class="row">
+        @foreach (var type in RoomTypes)
+        {
+            <div class="col-2">
+                <RoomTypeCard RoomType="type"></RoomTypeCard>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    public List<RoomType> RoomTypes { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        RoomTypes = await hotelService.GetAllRoomTypesAsync();
+    }
+}

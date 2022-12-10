@@ -1,0 +1,73 @@
+﻿@using HotelFinal.Client.Services;
+@using HotelFinal.Shared;
+@inject HotelService hotelService
+@inject UserService userService
+@inject NavigationManager navManager;
+
+<div class="btn btn-primary" @onclick=ReserveRoom>
+    Reserve Room
+</div>
+
+@code {
+    [Parameter]
+    public DateTime Checkin { get; set; }
+
+    [Parameter]
+    public DateTime Checkout { get; set; }
+
+    [Parameter]
+    public RoomType RoomType { get; set; }
+
+    public async Task ReserveRoom()
+    {
+        var userId = await userService.GetUserId();
+        var userEmail = await userService.GetUserEmail();
+        Guest guest;
+
+        try
+        {
+            guest = await hotelService.GetGuestAsync(userId, userEmail);
+        }
+        catch
+        {
+            guest = new()
+                {
+                    FirstName = userId,
+                    LastName = userEmail
+                };
+
+            await hotelService.PostGuestAsync(guest);
+            guest = await hotelService.GetGuestAsync(userId, userEmail);
+        }
+
+
+        Reservation reservation = new()
+            {
+                GuestId = guest.Id,
+                ExpectedCheckin = DateOnly.FromDateTime(Checkin),
+                ExpectedCheckout = DateOnly.FromDateTime(Checkout),
+            };
+
+        List<RoomType> roomTypes = new();
+        roomTypes.Add(RoomType);
+
+        ReservationPostObject rpo = new()
+            {
+                Reservation = reservation,
+                RoomTypes = roomTypes
+            };
+
+        await hotelService.PostReservationsAsync(rpo);
+
+        ReservationConfirmationObject rco = new()
+            {
+                UserEmail = userEmail,
+                Checkin = Checkin.ToString("yyyy-MM-dd"),
+                Checkout = Checkout.ToString("yyyy-MM-dd")
+            };
+
+        await hotelService.SendReservationConfirmation(rco);
+
+        navManager.NavigateTo("/ReservationConfirmation");
+    }
+}

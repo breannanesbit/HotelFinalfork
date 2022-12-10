@@ -1,6 +1,7 @@
 ﻿using HotelFinal.Shared;
 using Mailjet.Client;
 using Mailjet.Client.TransactionalEmails;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace HotelFinal.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EmailController : ControllerBase
     {
         private readonly MailjetClient mailClient;

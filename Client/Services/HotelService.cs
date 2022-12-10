@@ -8,15 +8,17 @@ namespace HotelFinal.Client.Services
     public class HotelService
     {
         private readonly HttpClient httpClient;
+        private readonly PublicClient publicClient;
 
-        public HotelService(HttpClient httpClient)
+        public HotelService(HttpClient httpClient, PublicClient publicClient)
         {
             this.httpClient = httpClient;
+            this.publicClient = publicClient;
         }
         
         public async Task<List<RoomType>> GetAllRoomTypesAsync()
         {
-            var rooms = await httpClient.GetFromJsonAsync<List<RoomType>>("/api/room/roomtype");
+            var rooms = await publicClient.Client.GetFromJsonAsync<List<RoomType>>("/api/room/roomtype");
             return rooms;
         }
 
@@ -42,14 +44,14 @@ namespace HotelFinal.Client.Services
         public async Task<List<RoomType>> GetAvailableRoomTypesAsync(DateTime start, DateTime end)
         {
             var s = start.ToString("yyyy-MM-dd");
-            var e = start.ToString("yyyy-MM-dd");
+            var e = end.ToString("yyyy-MM-dd");
             return await httpClient.GetFromJsonAsync<List<RoomType>>($"/api/room/availableRoomTypes/{s}/{e}");
         }
 
         public async Task<List<Room>> GetAvailableRooms(DateTime start, DateTime end)
         {
             var s = start.ToString("yyyy-MM-dd");
-            var e = start.ToString("yyyy-MM-dd");
+            var e = end.ToString("yyyy-MM-dd");
             return await httpClient.GetFromJsonAsync<List<Room>>($"/api/room/availableRoom/{s}/{e}");
         }
 

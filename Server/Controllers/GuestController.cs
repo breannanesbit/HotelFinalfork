@@ -1,4 +1,5 @@
 ﻿using HotelFinal.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,7 @@ namespace HotelFinal.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GuestController : ControllerBase
     {
         private readonly HotelContext context;
@@ -15,13 +17,6 @@ namespace HotelFinal.Server.Controllers
         {
             this.context = context;
             this.logger = logger;
-        }
-
-        [HttpPost("res")]
-        public async Task PostReservationAsync(Reservation reservation)
-        {
-            context.Reservations.Add(reservation);
-            await context.SaveChangesAsync();
         }
 
         [HttpGet("{firstname}/{lastname}")]

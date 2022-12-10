@@ -22,14 +22,18 @@
             }
         </div>
     </div>
-    <div class="card-footer text-center">
-        <div class="btn btn-primary">
-            Reserve Room
+    @if (ChildContent is not null)
+    {
+        <div class="card-footer text-center">
+            @ChildContent
         </div>
-    </div>
+    }
 </div>
 
 @code {
     [Parameter]
     public RoomType RoomType { get; set; }
+
+    [Parameter] 
+    public RenderFragment? ChildContent { get; set; }
 }

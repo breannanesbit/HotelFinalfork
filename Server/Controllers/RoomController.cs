@@ -1,5 +1,6 @@
 ﻿using HotelFinal.Client.Pages;
 using HotelFinal.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ namespace HotelFinal.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
+    [Authorize]
     public class RoomController : ControllerBase
     {
         private readonly HotelContext hotelContext;
@@ -19,6 +20,13 @@ namespace HotelFinal.Server.Controllers
         {
             this.hotelContext = hotelContext;
             this.ilogger = ilogger;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("roomtype")]
+        public async Task<List<RoomType>> GetRoomTypesAsync()
+        {
+            return await hotelContext.RoomTypes.ToListAsync();
         }
 
         [HttpGet("cleanrooms")]
@@ -41,12 +49,6 @@ namespace HotelFinal.Server.Controllers
             return await hotelContext.RentalRooms.Include(r => r.Rental)
                 .Where(r => r.Rental.Checkin >= DateOnly.FromDateTime(start) && r.Rental.Checkout <= DateOnly.FromDateTime(end)).Include(r => r.RoomCleaning)
                 .ThenInclude(r => r.Room).ToListAsync();
-        }
-    
-        [HttpGet("roomtype")]
-        public async Task<List<RoomType>> GetRoomTypesAsync()
-        {
-            return await hotelContext.RoomTypes.ToListAsync();
         }
 
         [HttpGet("roomTypeCounts")]

@@ -31,8 +31,13 @@
     <div class="row" >
         @foreach (var type in RoomTypes)
         {
-            <div class="col-3" @onclick="() => ReserveRoom(type)">
-                <RoomTypeCard RoomType=type></RoomTypeCard>
+            <div class="col-3">
+                <RoomTypeCard RoomType=type>
+                    <ReservationButton 
+                        Checkin="Checkin.Value" 
+                        Checkout="Checkout.Value" 
+                        RoomType="type"/>
+                </RoomTypeCard>
             </div>
         }
     </div>
@@ -47,58 +52,5 @@
     public async Task GetAvailableRoomTypes()
     {
         RoomTypes = await hotelService.GetAvailableRoomTypesAsync(Checkin.Value, Checkout.Value);
-    }
-
-    public async Task ReserveRoom(RoomType roomType)
-    {
-        var userId = await userService.GetUserId();
-        var userEmail = await userService.GetUserEmail();
-        Guest guest;
-
-        try
-        {
-            guest = await hotelService.GetGuestAsync(userId, userEmail);
-        }
-        catch
-        {
-            guest = new()
-                {
-                    FirstName = userId,
-                    LastName = userEmail
-                };
-
-            await hotelService.PostGuestAsync(guest);
-            guest = await hotelService.GetGuestAsync(userId, userEmail);
-        }
-
-
-        Reservation reservation = new()
-            {
-                GuestId = guest.Id,
-                ExpectedCheckin = DateOnly.FromDateTime(Checkin.Value),
-                ExpectedCheckout = DateOnly.FromDateTime(Checkout.Value),
-            };
-
-        List<RoomType> roomTypes = new();
-        roomTypes.Add(roomType);
-
-        ReservationPostObject rpo = new()
-            {
-                Reservation = reservation,
-                RoomTypes = roomTypes
-            };
-
-        await hotelService.PostReservationsAsync(rpo);
-
-        ReservationConfirmationObject rco = new()
-        {
-            UserEmail = userEmail,
-            Checkin = Checkin.Value.ToString("yyyy-MM-dd"),
-            Checkout = Checkout.Value.ToString("yyyy-MM-dd")
-        };
-
-        await hotelService.SendReservationConfirmation(rco);
-
-        navManager.NavigateTo("/ReservationConfirmation");
     }
 }
