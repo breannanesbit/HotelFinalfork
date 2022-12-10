@@ -28,19 +28,28 @@
 </div>
 @if (RoomTypes is not null)
 {
-    <div class="row" >
-        @foreach (var type in RoomTypes)
-        {
-            <div class="col-3">
-                <RoomTypeCard RoomType=type>
-                    <ReservationButton 
-                        Checkin="Checkin.Value" 
-                        Checkout="Checkout.Value" 
-                        RoomType="type"/>
-                </RoomTypeCard>
-            </div>
-        }
-    </div>
+    @if (RoomTypes.Count != 0)
+    {
+        <div class="row" >
+            @foreach (var type in RoomTypes)
+            {
+                <div class="col-3">
+                    <RoomTypeCard RoomType=type>
+                        <ReservationButton 
+                            Checkin="Checkin.Value" 
+                            Checkout="Checkout.Value" 
+                            RoomType="type"/>
+                    </RoomTypeCard>
+                </div>
+            }
+        </div>
+    }
+    else
+    {  
+        <div class="display-3 text-center">
+            <p>😮Sorry, we don't have any rooms available. Please choose another date range.</p>
+        </div>
+    }
 }
 
 

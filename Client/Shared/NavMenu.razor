@@ -28,6 +28,19 @@
                 </div>
             </Authorized>
         </AuthorizeView>
+        <AuthorizeView Roles="Administrator, Staff">
+            <hr class="text-white mx-4" />
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="Checkin">
+                    <i class="bi bi-search me-2"></i> Guest Checkin
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="RoomCleaning">
+                    <i class="bi bi-search me-2"></i> Room Cleaning
+                </NavLink>
+            </div>
+        </AuthorizeView>
         <AuthorizeView Roles="Administrator">
             <Authorized>
                 <hr class="text-white mx-4"/>

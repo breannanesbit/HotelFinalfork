@@ -8,7 +8,7 @@ namespace HotelFinal.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ReservationController : ControllerBase
     {
         private readonly HotelContext hotelContext;
@@ -38,11 +38,17 @@ namespace HotelFinal.Server.Controllers
             }
         }
 
-        [HttpGet("/allreservation")]
+        [HttpGet("allreservation")]
         public async Task<List<Reservation>> AllReservationAsync()
         {
-            return await hotelContext.Reservations.ToListAsync();
+            return await hotelContext.Reservations
+                .Include(r => r.Guest)
+                .Include(r => r.Rentals)
+                .Include(r => r.ReservationRooms)
+                .ToListAsync();
         }
+
+
         [HttpGet("allreservationroom")]
         public async Task<List<ReservationRoom>> AllReservationRoomsAsync()
         {

@@ -24,7 +24,7 @@ namespace HotelFinal.Client.Services
 
         public async Task<List<Reservation>> GetAllReservationAsync()
         {
-            return await httpClient.GetFromJsonAsync<List<Reservation>>("/api/reservation/allreservation");
+            return await httpClient.GetFromJsonAsync<List<Reservation>>("/api/Reservation/allreservation");
         }
         public async Task<List<ReservationRoom>> GetAllReservationRoomAsync()
         {
@@ -79,6 +79,13 @@ namespace HotelFinal.Client.Services
         public async Task SendReservationConfirmation(ReservationConfirmationObject rco)
         {
             await httpClient.PostAsJsonAsync<ReservationConfirmationObject>("/api/email/reservationConfirmation", rco);
+        }
+
+        // Cleaning
+        // --------
+        public async Task<List<CleaningType>> GetCleaningTypesAsync()
+        {
+            return await httpClient.GetFromJsonAsync<List<CleaningType>>("/api/cleaning/types");
         }
     }
 }

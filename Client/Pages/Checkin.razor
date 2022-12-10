@@ -1,0 +1,52 @@
+﻿@page "/Checkin"
+@using HotelFinal.Client.Services;
+@using HotelFinal.Shared;
+@inject HotelService hotelService
+<h3>Checkin</h3>
+
+<AuthorizeView Roles="Administrator, Staff">
+    <Authorized>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Guest</th>
+                    <th>Checkin date</th>
+                    <th>Checkout date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var res in Reservations)
+                {
+                    //var reser = reservationList.Find(res.Reservation);
+                    <tr>
+                        <td>@res.Guest.LastName</td>
+                        <td>@res.ExpectedCheckin</td>
+                        <td>@res.ExpectedCheckout</td>
+                        <td>
+                            <div class="btn btn-primary">
+                                Checkin
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+    public List<Reservation> Reservations { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Reservations = await hotelService.GetAllReservationAsync();
+        Reservations = Reservations.Where(r => r.Rentals.Count() == 0).ToList();
+    }
+
+    //public CheckinGuest(Reservation reservation)
+    //{
+        
+    //}
+}

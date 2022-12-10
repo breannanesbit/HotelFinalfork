@@ -1,0 +1,36 @@
+﻿@page "/RoomCleaning"
+@using HotelFinal.Client.Services;
+@using HotelFinal.Shared;
+@using System.ComponentModel.DataAnnotations;
+@inject HotelService hotelService;
+
+<EditForm Model="RoomNumber">
+    <div>
+        <label class="form-label">
+            Room Number:
+            <input class="form-control" type="number" @bind=RoomNumber/>
+        </label>
+        <InputSelect class="form-select" @bind-Value="CleaningId" >
+            @foreach (var type in CleaningTypes)
+            {
+                <option value=@type.Id>@type.Type</option>
+            }
+        </InputSelect>
+    </div>
+</EditForm>
+
+@CleaningId
+
+@code {
+
+    [Required]
+    public int RoomNumber { get; set; }
+    public int CleaningId { get; set; }
+
+    public List<CleaningType> CleaningTypes { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        CleaningTypes = await hotelService.GetCleaningTypesAsync();
+    }
+}
