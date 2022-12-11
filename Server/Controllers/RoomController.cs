@@ -66,7 +66,7 @@ namespace HotelFinal.Server.Controllers
         public async Task<List<RentalRoom>> GetAvailableRooms(DateTime start, DateTime end)
         {
             return await hotelContext.RentalRooms.Include(r => r.Rental)
-                .Where(r => r.Rental.Checkin >= DateOnly.FromDateTime(start) && r.Rental.Checkout <= DateOnly.FromDateTime(end)).Include(r => r.RoomCleaning)
+                .Where(r => r.Rental.Checkin >= DateOnly.FromDateTime(start) && (r.Rental.Checkout == null || r.Rental.Checkout <= DateOnly.FromDateTime(end))).Include(r => r.RoomCleaning)
                 .ThenInclude(r => r.Room).ToListAsync();
         }
 

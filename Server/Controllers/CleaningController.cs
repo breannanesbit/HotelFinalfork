@@ -29,5 +29,15 @@ namespace HotelFinal.Server.Controllers
             return await hotelContext.CleaningTypes.ToListAsync();
         }
 
+        [HttpGet("occupancy/{roomTypeId}")]
+        public async Task<RoomCleaning> GetFreeRoomCleaning(int roomTypeId)
+        {
+            var roomCleaning = await hotelContext.RoomCleanings
+                .Include(r => r.RentalRoom)
+                .Where(r => r.RentalRoom == null)
+                .FirstOrDefaultAsync();
+
+            return roomCleaning;
+        }
     }
 }

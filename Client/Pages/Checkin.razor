@@ -24,9 +24,10 @@
                         <td>@res.ExpectedCheckin</td>
                         <td>@res.ExpectedCheckout</td>
                         <td>
-                            <div class="btn btn-primary">
+                            <button class="btn btn-primary" 
+                            @onclick="() => CheckinGuest(res)">
                                 Checkin
-                            </div>
+                            </button>
                         </td>
                     </tr>
                 }
@@ -41,12 +42,32 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Reservations = await hotelService.GetAllReservationAsync();
-        Reservations = Reservations.Where(r => r.Rentals.Count() == 0).ToList();
+        Reservations = await hotelService.AllReservationsWithoutRentals();
     }
 
-    //public CheckinGuest(Reservation reservation)
-    //{
-        
-    //}
+    private async Task<bool> HasRental(int resId)
+    {
+        var rental = await hotelService.GetReservationRental(resId);
+
+        if (rental is null)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public async Task CheckinGuest(Reservation reservation)
+    {
+        try
+        {
+            await hotelService.CreateRentalAsync(reservation);
+        }
+        catch
+        {
+            int x = 7;
+        }
+
+        Reservations = await hotelService.AllReservationsWithoutRentals();
+    }
 }

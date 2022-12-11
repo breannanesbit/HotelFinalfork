@@ -5,7 +5,7 @@ namespace HotelFinal.Shared;
 
 public partial class Rental
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     public int? ReservationId { get; set; }
 
@@ -17,13 +17,13 @@ public partial class Rental
 
     public DateOnly? Checkout { get; set; }
 
-    public virtual Guest Guest { get; set; } = null!;
+    public virtual Guest? Guest { get; set; } = null!;
 
-    public virtual ICollection<RentalPayment> RentalPayments { get; } = new List<RentalPayment>();
+    public virtual ICollection<RentalPayment>? RentalPayments { get; } = new List<RentalPayment>();
 
-    public virtual ICollection<RentalRoom> RentalRooms { get; } = new List<RentalRoom>();
+    public virtual ICollection<RentalRoom>? RentalRooms { get; } = new List<RentalRoom>();
 
     public virtual Reservation? Reservation { get; set; }
 
-    public virtual Staff Staff { get; set; } = null!;
+    public virtual Staff? Staff { get; set; } = null!;
 }

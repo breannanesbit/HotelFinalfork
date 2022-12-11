@@ -41,18 +41,32 @@ namespace HotelFinal.Server.Controllers
         [HttpGet("allreservation")]
         public async Task<List<Reservation>> AllReservationAsync()
         {
-            return await hotelContext.Reservations
+            var stuff =  await hotelContext.Reservations
                 .Include(r => r.Guest)
                 .Include(r => r.Rentals)
                 .Include(r => r.ReservationRooms)
                 .ToListAsync();
+
+            return stuff;
         }
 
+        [HttpGet("noRentalAllReservations")]
+        public async Task<List<Reservation>> AllReservationsWithouRentals()
+        {
+            return await hotelContext.Reservations
+                .Include(r => r.Guest)
+                .Include(r => r.Rentals)
+                .Include(r => r.ReservationRooms)
+                .Where(r => r.Rentals.Count() == 0)
+                .ToListAsync();
+        }
 
         [HttpGet("allreservationroom")]
         public async Task<List<ReservationRoom>> AllReservationRoomsAsync()
         {
-            var list =  await hotelContext.ReservationRooms.Include(r => r.Reservation).Include(r => r.RoomType).ToListAsync();
+            var list =  await hotelContext.ReservationRooms.Include(r => r.Reservation)
+                .Include(r => r.RoomType)
+                .ToListAsync();
             ilogger.LogDebug("made it to the reservationroom");
             return list;
         }

@@ -9,13 +9,14 @@
 {
     <EditForm EditContext="editContext" OnSubmit=OnSubmit>
         <ValidationSummary/>
-        <div>
-            <label class="form-label">
+        <div class="my-auto">
+            <label class="form-label my-auto">
                 Room Number:
                 <input class="form-control" type="number" @bind=RCM.RoomNumber/>
             </label>
-            <label class="form-label">
-                <select class="form-select my-2" @bind="RCM.CleaningId">
+            <label class="form-label my-auto">
+                Cleaning Type:
+                <select class="form-select" @bind="RCM.CleaningId">
                     <option value=null>@string.Empty</option>
                     @foreach (var type in CleaningTypes)
                     {
@@ -23,7 +24,7 @@
                     }
                 </select>
             </label>
-            <button class="btn btn-primary" type="submit" disabled=@submitDisabled>Submit</button>
+            <button class="btn btn-primary my-auto" type="submit" disabled=@submitDisabled>Submit</button>
         </div>
     </EditForm>
 }
@@ -112,10 +113,6 @@ else
 
             RCM = new();
             submitDisabled = false;
-        }
-        else
-        {
-            
         }
     }
 }

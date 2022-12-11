@@ -32,11 +32,11 @@ namespace HotelFinal.Client.Services
             return await httpClient.GetFromJsonAsync<List<RoomType>>($"/api/room/availableRoomTypes/{s}/{e}");
         }
 
-        public async Task<List<Room>> GetAvailableRooms(DateTime start, DateTime end)
+        public async Task<List<RentalRoom>> GetAvailableRooms(DateTime start, DateTime end)
         {
             var s = start.ToString("yyyy-MM-dd");
             var e = end.ToString("yyyy-MM-dd");
-            return await httpClient.GetFromJsonAsync<List<Room>>($"/api/room/availableRoom/{s}/{e}");
+            return await httpClient.GetFromJsonAsync<List<RentalRoom>>($"/api/room/availableRoom/{s}/{e}");
         }
 
         public async Task<bool> IsValidRoom(int roomNumber)
@@ -75,6 +75,11 @@ namespace HotelFinal.Client.Services
         public async Task SendReservationConfirmation(ReservationConfirmationObject rco)
         {
             await httpClient.PostAsJsonAsync<ReservationConfirmationObject>("/api/email/reservationConfirmation", rco);
+        }
+
+        public async Task<List<Reservation>> AllReservationsWithoutRentals()
+        {
+            return await httpClient.GetFromJsonAsync<List<Reservation>>("/api/Reservation/noRentalAllReservations");
         }
 
 
@@ -125,6 +130,18 @@ namespace HotelFinal.Client.Services
         public async Task RecordRoomCleaning(RoomCleaning roomCleaning)
         {
             await httpClient.PostAsJsonAsync<RoomCleaning>("/api/cleaning", roomCleaning);
+        }
+
+        // Rental
+        // -------------
+        public async Task CreateRentalAsync(Reservation reservation)
+        {
+            await httpClient.PostAsJsonAsync<Reservation>("/api/rental", reservation);
+        }
+
+        public async Task<Rental> GetReservationRental(int reservationId)
+        {
+            return await httpClient.GetFromJsonAsync<Rental>($"/api/rental/{reservationId}");
         }
     }
 }

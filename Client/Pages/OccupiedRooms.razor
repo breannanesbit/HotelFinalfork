@@ -21,13 +21,13 @@
 
 @foreach(var r in RoomOccupied)
 {
-    <li>@r.RoomNumber</li>
+    <li>@r.RentalRate</li>
 }
 
 @code {
     public DateTime? Start { get; set; }
     public DateTime? End { get; set; }
-    public List<Room> RoomOccupied { get; set; } = new();
+    public List<RentalRoom> RoomOccupied { get; set; } = new();
 
     protected async Task GetAvaibleRooms()
     {

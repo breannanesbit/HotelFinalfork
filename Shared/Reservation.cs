@@ -13,9 +13,9 @@ public partial class Reservation
 
     public DateOnly ExpectedCheckout { get; set; }
 
-    public virtual Guest? Guest { get; set; } = null!;
+    public virtual Guest? Guest { get; set; }
 
-    public virtual ICollection<Rental>? Rentals { get; } = new List<Rental>();
+    public virtual ICollection<Rental>? Rentals { get; } 
 
-    public virtual ICollection<ReservationRoom>? ReservationRooms { get; } = new List<ReservationRoom>();
+    public virtual ICollection<ReservationRoom>? ReservationRooms { get; } 
 }
