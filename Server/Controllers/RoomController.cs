@@ -31,9 +31,11 @@ namespace HotelFinal.Server.Controllers
             if (room == null)
             {
                 return false;
+                ilogger.LogError("room number was not an valid room number");
             }
 
             return true;
+            ilogger.LogDebug("found room number");
         }
 
         [HttpGet("{roomNumber}")]
@@ -110,6 +112,7 @@ namespace HotelFinal.Server.Controllers
 
             List<RoomType> availableRoomsInDateRange = FilterEmptyRoomTypes(availableRoomCounts, roomTypes);
 
+            ilogger.LogDebug("made it to get all available rooms");
             return availableRoomsInDateRange;
         }
 
@@ -125,6 +128,7 @@ namespace HotelFinal.Server.Controllers
                     if (roomTypeCounts.ContainsKey(room.RoomTypeId))
                     {
                         roomTypeCounts[room.RoomTypeId]--;
+                        ilogger.LogInformation("subtracting if we find a room that is occupided");
                     }
                 }
             }
