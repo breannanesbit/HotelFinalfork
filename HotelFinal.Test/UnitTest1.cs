@@ -3,6 +3,7 @@ using HotelFinal.Server.Controllers;
 using HotelFinal.Server;
 using HotelFinal.Shared;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace HotelFinal.Test
 {
@@ -12,10 +13,16 @@ namespace HotelFinal.Test
         [SetUp]
         public void Setup()
         {
-           // var ilog = new ILogger<RoomController>();
             HotelContext hc = new();
+            var serviceProvider = new ServiceCollection()
+            .AddLogging()
+            .BuildServiceProvider();
 
-            RoomController = new(hc,null);
+            var factory = serviceProvider.GetService<ILoggerFactory>();
+
+            var logger = factory.CreateLogger<RoomController>();
+
+            RoomController = new(hc, logger);
         }
 
         [Test]
