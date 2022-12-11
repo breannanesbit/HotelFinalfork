@@ -1,11 +1,30 @@
 ﻿@page "/Checkin"
+@using HotelFinal.Client.Components;
 @using HotelFinal.Client.Services;
 @using HotelFinal.Shared;
 @inject HotelService hotelService
+@inject UserService userService
 <h3>Checkin</h3>
 
 <AuthorizeView Roles="Administrator, Staff">
     <Authorized>
+        @if (!successfulCheckin)
+        {
+            <div class="alert alert-danger" role="alert">
+                <div class="row">
+                    <div class="col my-auto">
+                        A room has not been prepared for this reservation!
+                    </div>
+                    <div class="col text-end my-auto">
+                        <div class="btn btn-outline-danger bg-white"
+                        @onclick="() => successfulCheckin = true">
+                            <i class="bi bi-x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <CheckinAlert AlertStatus="alert"></CheckinAlert>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -39,6 +58,9 @@
 
 @code {
     public List<Reservation> Reservations { get; set; } = new();
+    public bool successfulCheckin { get; set; } = true;
+    private CheckinAlert.Alert alert = CheckinAlert.Alert.None;
+    private readonly DateOnly today = DateOnly.FromDateTime(DateTime.Now);
 
     protected override async Task OnInitializedAsync()
     {
@@ -59,15 +81,49 @@
 
     public async Task CheckinGuest(Reservation reservation)
     {
-        try
+        if (today >= reservation.ExpectedCheckin && today <= reservation.ExpectedCheckout)
         {
-            await hotelService.CreateRentalAsync(reservation);
-        }
-        catch
-        {
-            int x = 7;
-        }
+            Staff staff;
+            var userId = await userService.GetUserId();
+            var userEmail = await userService.GetUserEmail();
+            try
+            {
+                staff = await hotelService.GetStaffAsync(userId, userEmail);
+            }
+            catch
+            {
+                staff = new()
+                    {
+                        FirstName = userId,
+                        LastName = userEmail
+                    };
 
-        Reservations = await hotelService.AllReservationsWithoutRentals();
+                await hotelService.PostStaffAsync(staff);
+                staff = await hotelService.GetStaffAsync(userId, userEmail);
+            }
+
+            RentalCreationObject rco = new()
+                {
+                    Reservation = reservation,
+                    Staff = staff
+                };
+
+            if (!(await hotelService.CreateRentalAsync(rco)))
+            {
+                alert = CheckinAlert.Alert.UnpreparedRoom;
+            }
+            Reservations = await hotelService.AllReservationsWithoutRentals();
+        }
+        else
+        {
+            if (today < reservation.ExpectedCheckin)
+            {
+                alert = CheckinAlert.Alert.EarlyCheckinAttempt;
+            }
+            else
+            {
+                alert = CheckinAlert.Alert.LateCheckinAttempt;      
+            }
+        }
     }
 }

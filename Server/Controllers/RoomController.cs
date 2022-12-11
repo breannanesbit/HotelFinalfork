@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Syncfusion.Blazor.Data;
 
 namespace HotelFinal.Server.Controllers
 {
@@ -62,12 +63,16 @@ namespace HotelFinal.Server.Controllers
             return list;
         }
 
-        [HttpGet("availableRoom/{start}/{end}")]
-        public async Task<List<RentalRoom>> GetAvailableRooms(DateTime start, DateTime end)
+        [HttpGet("occupiedRooms/{date}")]
+        public async Task<List<RentalRoom>> GetAvailableRooms(DateTime date)
         {
-            return await hotelContext.RentalRooms.Include(r => r.Rental)
-                .Where(r => r.Rental.Checkin >= DateOnly.FromDateTime(start) && (r.Rental.Checkout == null || r.Rental.Checkout <= DateOnly.FromDateTime(end))).Include(r => r.RoomCleaning)
+           var stuff = await hotelContext.RentalRooms
+                .Include(r => r.Rental)
+                .Where(r => DateOnly.FromDateTime(date) >= r.Rental.Checkin 
+                && (r.Rental.Checkout == null || DateOnly.FromDateTime(date) <= r.Rental.Checkout))
+                .Include(r => r.RoomCleaning)
                 .ThenInclude(r => r.Room).ToListAsync();
+            return stuff;
         }
 
         [HttpGet("roomTypeCounts")]

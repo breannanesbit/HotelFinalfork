@@ -65,6 +65,18 @@ else
     public async Task OnSubmit()
     {
         validationMessageStore.Clear();
+
+        var rentalRooms = await hotelService.GetOccupiedRooms(DateTime.Now);
+
+        if (rentalRooms != null && RCM.CleaningId == 1)
+        {
+            RentalRoom room = rentalRooms.FirstOrDefault(r => r.RoomCleaning.Room.RoomNumber == RCM.RoomNumber);
+
+            if (room != null && room.Rental.Checkout == null)
+            {
+                validationMessageStore.Add(() => RCM.CleaningId, "You cannot peform occupancy cleaning on a occupied room.");
+            }
+        }
         if (!(await hotelService.IsValidRoom(RCM.RoomNumber)))
         {
             validationMessageStore.Add(() => RCM.RoomNumber, "Room number must be valid.");

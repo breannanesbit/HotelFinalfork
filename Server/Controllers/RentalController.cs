@@ -26,18 +26,18 @@ namespace HotelFinal.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> CreateRental(Reservation reservation)
+        public async Task<bool> CreateRental(RentalCreationObject rco)
         {
-            reservation = await hotelContext.Reservations
+            rco.Reservation = await hotelContext.Reservations
                 .Include(r => r.ReservationRooms)
-                .Where(r => r.Id== reservation.Id).FirstOrDefaultAsync();
+                .Where(r => r.Id== rco.Reservation.Id).FirstOrDefaultAsync();
 
             Rental rental = new Rental()
             {
                 Checkin = DateOnly.FromDateTime(DateTime.Now),
-                ReservationId = reservation.Id,
-                GuestId = reservation.GuestId,
-                StaffId = 1
+                ReservationId = rco.Reservation.Id,
+                GuestId = rco.Reservation.GuestId,
+                StaffId = rco.Staff.Id
             };
 
             await hotelContext.Rentals.AddAsync(rental);
@@ -45,7 +45,7 @@ namespace HotelFinal.Server.Controllers
 
             List<RentalRoom> rentalRooms = new();
 
-            foreach (var resRoom in reservation.ReservationRooms)
+            foreach (var resRoom in rco.Reservation.ReservationRooms)
             {
                 var roomCleaning = await hotelContext.RoomCleanings
                 .Include(r => r.Room.RoomType)
