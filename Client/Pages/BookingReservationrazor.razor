@@ -30,7 +30,7 @@
                 <div class="row" >
                     @foreach (var type in RoomTypes)
                     {
-                        <div class="col-3">
+                        <div class="col-lg-3 my-2">
                             <RoomTypeCard RoomType=type>
                                 <ReservationButton 
                                     Checkin="Checkin.Value" 
@@ -49,6 +49,9 @@
             }
         }
     </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedAlert />
+    </NotAuthorized>
 </AuthorizeView>
 
 

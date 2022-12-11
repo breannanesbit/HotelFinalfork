@@ -1,4 +1,5 @@
 ﻿@page "/reservationInfo"
+@using HotelFinal.Client.Components
 @using Services;
 @using HotelFinal.Shared
 @inject HotelService service
@@ -13,22 +14,26 @@
                     <th>Checkin date</th>
                     <th>Checkout date</th>
                     <th>Room Type</th>
+                    <th>Smoking</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach(var res in reservationroomList)
                 {
-                    //var reser = reservationList.Find(res.Reservation);
                     <tr>
                         <td>@res.Reservation.Guest.LastName</td>
                         <td>@res.Reservation.ExpectedCheckin</td>
                         <td>@res.Reservation.ExpectedCheckout</td>
                         <td>@res.RoomType.RType</td>
+                        <td>@(res.RoomType.Smoking ? "Smoking" : "Non Smoking")</td>
                     </tr>
                 }
             </tbody>
         </table>
     </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedAlert/>
+    </NotAuthorized>
 </AuthorizeView>
 
 @code {

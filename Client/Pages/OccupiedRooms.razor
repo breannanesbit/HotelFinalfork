@@ -1,22 +1,30 @@
 ﻿@page "/Occupiedrooms"
+@using HotelFinal.Client.Components
 @using HotelFinal.Client.Services;
 @using HotelFinal.Shared;
 @using Syncfusion.Blazor.Calendars
 @inject HotelService service
 
-<h3>Occupied Rooms</h3>
+<AuthorizeView Roles="Administrator">
+    <Authorized>
+        <h3>Occupied Rooms</h3>
+        <div class="row mb-2">
+            <div class="col-11 my-auto">
+                <SfDatePicker TValue="DateTime?" 
+                    @bind-Value=Date 
+                    Placeholder="Choose A Date" 
+                    Max="MaxDate"/>
+            </div>
+            <div class="col-1 btn btn-primary my-auto" @onclick=GetAvaibleRooms>
+                <i class="bi bi-search"></i>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedAlert />
+    </NotAuthorized>
+</AuthorizeView>
 
-<div class="row mb-2">
-    <div class="col-11 my-auto">
-        <SfDatePicker TValue="DateTime?" 
-            @bind-Value=Date 
-            Placeholder="Choose A Date" 
-            Max="MaxDate"/>
-    </div>
-    <div class="col-1 btn btn-primary my-auto" @onclick=GetAvaibleRooms>
-        <i class="bi bi-search"></i>
-    </div>
-</div>
 
 @foreach(var r in RoomOccupied)
 {

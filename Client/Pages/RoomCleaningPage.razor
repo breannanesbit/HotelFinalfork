@@ -1,39 +1,47 @@
 ﻿@page "/RoomCleaning"
+@using HotelFinal.Client.Components
 @using HotelFinal.Client.Services;
 @using HotelFinal.Shared;
 @using System.ComponentModel.DataAnnotations;
 @inject HotelService hotelService;
 @inject UserService userService;
 
-@if (finishedInitialization)
-{
-    <EditForm EditContext="editContext" OnSubmit=OnSubmit>
-        <ValidationSummary/>
-        <div class="my-auto">
-            <label class="form-label my-auto">
-                Room Number:
-                <input class="form-control" type="number" @bind=RCM.RoomNumber/>
-            </label>
-            <label class="form-label my-auto">
-                Cleaning Type:
-                <select class="form-select" @bind="RCM.CleaningId">
-                    <option value=null>@string.Empty</option>
-                    @foreach (var type in CleaningTypes)
-                    {
-                        <option value=@type.Id>@type.Type</option>
-                    }
-                </select>
-            </label>
-            <button class="btn btn-primary my-auto" type="submit" disabled=@submitDisabled>Submit</button>
-        </div>
-    </EditForm>
-}
-else
-{
-    <div class="spinner-border text-primary" role="status">
-        <span class="sr-only"></span>
-    </div>
-}
+<AuthorizeView>
+    <Authorized>
+        @if (finishedInitialization)
+        {
+            <EditForm Context="editFormContext" EditContext="editContext" OnSubmit=OnSubmit>
+                <ValidationSummary/>
+                <div class="my-auto">
+                    <label class="form-label my-auto">
+                        Room Number:
+                        <input class="form-control" type="number" @bind=RCM.RoomNumber/>
+                    </label>
+                    <label class="form-label my-auto">
+                        Cleaning Type:
+                        <select class="form-select" @bind="RCM.CleaningId">
+                            <option value=null>@string.Empty</option>
+                            @foreach (var type in CleaningTypes)
+                            {
+                                <option value=@type.Id>@type.Type</option>
+                            }
+                        </select>
+                    </label>
+                    <button class="btn btn-primary my-auto" type="submit" disabled=@submitDisabled>Submit</button>
+                </div>
+            </EditForm>
+        }
+        else
+        {
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only"></span>
+            </div>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedAlert />
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     public class RoomCleaningModel
@@ -46,8 +54,6 @@ else
     public RoomCleaningModel RCM { get; set; } = new();
 
     public List<CleaningType> CleaningTypes { get; set; } = new();
-
-
 
     private bool submitDisabled = false;
     private bool finishedInitialization = false;

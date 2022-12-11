@@ -138,6 +138,11 @@ namespace HotelFinal.Client.Services
             await httpClient.PostAsJsonAsync<RoomCleaning>("/api/cleaning", roomCleaning);
         }
 
+        public async Task<List<RoomCleaning>> GetRoomCleaningInfo()
+        {
+            return await httpClient.GetFromJsonAsync<List<RoomCleaning>>("/api/cleaning/info");
+        }
+
         // Rental
         // -------------
         public async Task<bool> CreateRentalAsync(RentalCreationObject rco)

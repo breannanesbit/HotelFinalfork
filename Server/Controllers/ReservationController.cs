@@ -8,7 +8,7 @@ namespace HotelFinal.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class ReservationController : ControllerBase
     {
         private readonly HotelContext hotelContext;

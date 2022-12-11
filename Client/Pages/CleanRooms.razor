@@ -1,4 +1,5 @@
 ﻿@page "/cleanRooms"
+@using HotelFinal.Client.Components
 @using HotelFinal.Client.Services;
 @using HotelFinal.Shared;
 @inject HotelService service
@@ -11,37 +12,42 @@
             <thead>
                 <tr>
                     <th>Date cleaned</th>
+                    <th>Cleaning Type</th>
                     <th>Room Number</th>
                     <th>Room Type</th>
                     <th>Staff</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var room in (clean ?? new List<RoomCleaningInfo>()))
+                @foreach (var room in (clean ?? new List<RoomCleaning>()))
                 {
                     //var reser = reservationList.Find(res.Reservation);
                     <tr>
                         <td>@room.DateCleaned</td>
+                        <td>@room.CleaningType.Type</td>
                         <td>
-                            @room.RoomNumber
+                            @room.Room.RoomNumber
                         </td>
                         <td>
-                            @room.RoomType
+                            @room.Room.RoomType.RType
                         </td>
                         <td>
-                            @room.Staff
+                            @room.Staff.LastName
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedAlert/>
+    </NotAuthorized>
 </AuthorizeView>
 
 @code {
-    public List<RoomCleaningInfo> clean { get; set; }
+    public List<RoomCleaning> clean { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        clean = await service.GetCleanRoomsAsync();
+        clean = await service.GetRoomCleaningInfo();
     }
 }
