@@ -8,55 +8,56 @@
 @inject NavigationManager navManager;
 <h3>Find A Room</h3>
 
-<AuthorizeView>
+<AuthorizeView Roles="User">
     <Authorized>
-
+        <div class="row mb-2">
+            <div class="col-11 my-auto">
+                <SfDateRangePicker TValue="DateTime?"
+                    Placeholder="How Long Are You Staying?"
+                    ShowClearButton="true"
+                    Min="today"
+                    @bind-StartDate=Checkin
+                    @bind-EndDate=Checkout />
+            </div>
+            <div class="col-1 btn btn-primary my-auto" @onclick=GetAvailableRoomTypes>
+                <i class="bi bi-search"></i>
+            </div>
+        </div>
+        @if (RoomTypes is not null)
+        {
+            @if (RoomTypes.Count != 0)
+            {
+                <div class="row" >
+                    @foreach (var type in RoomTypes)
+                    {
+                        <div class="col-3">
+                            <RoomTypeCard RoomType=type>
+                                <ReservationButton 
+                                    Checkin="Checkin.Value" 
+                                    Checkout="Checkout.Value" 
+                                    RoomType="type"/>
+                            </RoomTypeCard>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {  
+                <div class="display-3 text-center">
+                    <p>😮Sorry, we don't have any rooms available. Please choose another date range.</p>
+                </div>
+            }
+        }
     </Authorized>
 </AuthorizeView>
 
-<div class="row mb-2">
-    <div class="col-11 my-auto">
-        <SfDateRangePicker TValue="DateTime?"
-            Placeholder="How Long Are You Staying?"
-            ShowClearButton="true"
-            @bind-StartDate=Checkin
-            @bind-EndDate=Checkout />
-    </div>
-    <div class="col-1 btn btn-primary my-auto" @onclick=GetAvailableRoomTypes>
-        <i class="bi bi-search"></i>
-    </div>
-</div>
-@if (RoomTypes is not null)
-{
-    @if (RoomTypes.Count != 0)
-    {
-        <div class="row" >
-            @foreach (var type in RoomTypes)
-            {
-                <div class="col-3">
-                    <RoomTypeCard RoomType=type>
-                        <ReservationButton 
-                            Checkin="Checkin.Value" 
-                            Checkout="Checkout.Value" 
-                            RoomType="type"/>
-                    </RoomTypeCard>
-                </div>
-            }
-        </div>
-    }
-    else
-    {  
-        <div class="display-3 text-center">
-            <p>😮Sorry, we don't have any rooms available. Please choose another date range.</p>
-        </div>
-    }
-}
 
 
 @code {
     public DateTime? Checkin { get; set; }
     public DateTime? Checkout { get; set; }
     public List<RoomType> RoomTypes { get; set; }
+    private readonly DateTime today = DateTime.Now;
 
     public async Task GetAvailableRoomTypes()
     {

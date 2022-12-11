@@ -8,11 +8,10 @@
 
 <div class="row mb-2">
     <div class="col-11 my-auto">
-        <SfDateRangePicker TValue="DateTime?"
-            Placeholder="Pick Date range to see occupied room"
-            ShowClearButton="true"
-            @bind-StartDate=Start
-            @bind-EndDate=End />
+        <SfDatePicker TValue="DateTime?" 
+            @bind-Value=Date 
+            Placeholder="Choose A Date" 
+            Max="MaxDate"/>
     </div>
     <div class="col-1 btn btn-primary my-auto" @onclick=GetAvaibleRooms>
         <i class="bi bi-search"></i>
@@ -21,17 +20,16 @@
 
 @foreach(var r in RoomOccupied)
 {
-    <li>@r.RentalRate</li>
+    <li>Room @r.RoomCleaning.Room.RoomNumber</li>
 }
 
 @code {
-    public DateTime? Start { get; set; }
-    public DateTime? End { get; set; }
+    public DateTime? Date { get; set; }
     public List<RentalRoom> RoomOccupied { get; set; } = new();
+    public DateTime MaxDate { get; set; } = DateTime.Now;
 
     protected async Task GetAvaibleRooms()
     {
-        RoomOccupied = await service.GetAvailableRooms(Start.Value, End.Value);
-
+        RoomOccupied = await service.GetOccupiedRooms(Date.Value);
     }
 }

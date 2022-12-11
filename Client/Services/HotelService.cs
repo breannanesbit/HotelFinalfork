@@ -1,5 +1,6 @@
 ﻿using HotelFinal.Client.Pages;
 using HotelFinal.Shared;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Net.Http.Json;
 using System.Runtime.InteropServices;
@@ -35,12 +36,10 @@ namespace HotelFinal.Client.Services
             return await httpClient.GetFromJsonAsync<List<RoomType>>($"/api/room/availableRoomTypes/{s}/{e}");
         }
 
-        public async Task<List<RentalRoom>> GetAvailableRooms(DateTime start, DateTime end)
+        public async Task<List<RentalRoom>> GetOccupiedRooms(DateTime date)
         {
-            var s = start.ToString("yyyy-MM-dd");
-            var e = end.ToString("yyyy-MM-dd");
-            logger.LogInformation(s, e);
-            return await httpClient.GetFromJsonAsync<List<RentalRoom>>($"/api/room/availableRoom/{s}/{e}");
+            var s = date.ToString("yyyy-MM-dd");
+            return await httpClient.GetFromJsonAsync<List<RentalRoom>>($"/api/room/occupiedRooms/{s}");
         }
 
         public async Task<bool> IsValidRoom(int roomNumber)
@@ -141,9 +140,12 @@ namespace HotelFinal.Client.Services
 
         // Rental
         // -------------
-        public async Task CreateRentalAsync(Reservation reservation)
+        public async Task<bool> CreateRentalAsync(RentalCreationObject rco)
         {
-            await httpClient.PostAsJsonAsync<Reservation>("/api/rental", reservation);
+            var response = await httpClient.PostAsJsonAsync<RentalCreationObject>("/api/rental", rco);
+            var resultString = await  response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<bool>(resultString);
+            return result;
         }
 
         public async Task<Rental> GetReservationRental(int reservationId)

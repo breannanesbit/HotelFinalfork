@@ -1,0 +1,42 @@
+﻿@if (AlertStatus != Alert.None)
+{
+    <div class="alert alert-danger" role="alert">
+        <div class="row">
+            <div class="col my-auto">
+                @AlertMessages[AlertStatus]
+            </div>
+            <div class="col text-end my-auto">
+                <div class="btn btn-outline-danger bg-white"
+                     @onclick=ClearAlerts>
+                    <i class="bi bi-x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    public enum Alert
+    {
+        None,
+        UnpreparedRoom,
+        EarlyCheckinAttempt,
+        LateCheckinAttempt
+    }
+
+    [Parameter]
+    public Alert AlertStatus { get; set; } = Alert.None;
+
+    private Dictionary<Alert, String> AlertMessages = new()
+    {
+        { Alert.None, ""},
+        { Alert.UnpreparedRoom, "A room has not been prepared for this reservation!" },
+        { Alert.EarlyCheckinAttempt, "A guest cannot checkin before their reservation date!"},
+        { Alert.LateCheckinAttempt, "A guest cannot checkin after their reservation date!" }
+    };
+
+    public async Task ClearAlerts()
+    {
+        AlertStatus = Alert.None;
+    }
+}
