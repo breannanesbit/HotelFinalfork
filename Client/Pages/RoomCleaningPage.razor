@@ -6,7 +6,7 @@
 @inject HotelService hotelService;
 @inject UserService userService;
 
-<AuthorizeView>
+<AuthorizeView Roles="Administrator, Staff">
     <Authorized>
         @if (finishedInitialization)
         {
