@@ -10,11 +10,13 @@ namespace HotelFinal.Client.Services
     {
         private readonly HttpClient httpClient;
         private readonly PublicClient publicClient;
+        private readonly ILogger<HotelService> logger;
 
-        public HotelService(HttpClient httpClient, PublicClient publicClient)
+        public HotelService(HttpClient httpClient, PublicClient publicClient, ILogger<HotelService> logger)
         {
             this.httpClient = httpClient;
             this.publicClient = publicClient;
+            this.logger = logger;
         }
         
         // Rooms
@@ -29,6 +31,7 @@ namespace HotelFinal.Client.Services
         {
             var s = start.ToString("yyyy-MM-dd");
             var e = end.ToString("yyyy-MM-dd");
+            logger.LogInformation(s, e);
             return await httpClient.GetFromJsonAsync<List<RoomType>>($"/api/room/availableRoomTypes/{s}/{e}");
         }
 
@@ -36,12 +39,15 @@ namespace HotelFinal.Client.Services
         {
             var s = start.ToString("yyyy-MM-dd");
             var e = end.ToString("yyyy-MM-dd");
+            logger.LogInformation(s, e);
             return await httpClient.GetFromJsonAsync<List<RentalRoom>>($"/api/room/availableRoom/{s}/{e}");
         }
 
         public async Task<bool> IsValidRoom(int roomNumber)
         {
             return await httpClient.GetFromJsonAsync<bool>($"/api/room/valid/{roomNumber}");
+            logger.LogWarning("could be invaild");
+          
         }
 
         public async Task<Room> GetRoomFromRoomNumberAsync(int roomNumber)
@@ -120,6 +126,7 @@ namespace HotelFinal.Client.Services
         public async Task<List<RoomCleaningInfo>> GetCleanRoomsAsync()
         {
             return await httpClient.GetFromJsonAsync<List<RoomCleaningInfo>>($"/api/room/cleanrooms");
+            logger.LogWarning("Could potiental be none");
         }
 
         public async Task<List<CleaningType>> GetCleaningTypesAsync()
