@@ -41,13 +41,28 @@ namespace HotelFinal.Server.Controllers
         [HttpGet("allreservation")]
         public async Task<List<Reservation>> AllReservationAsync()
         {
-            var stuff =  await hotelContext.Reservations
+            return await hotelContext.Reservations
                 .Include(r => r.Guest)
                 .Include(r => r.Rentals)
                 .Include(r => r.ReservationRooms)
                 .ToListAsync();
+        }
 
-            return stuff;
+        [HttpPost("cancel")]
+        public async Task CancelReservation(Reservation reservation)
+        {
+            hotelContext.Reservations.Remove(reservation);
+            await hotelContext.SaveChangesAsync();
+        }
+
+        [HttpGet("unfulfilled")]
+        public async Task<List<Reservation>> GetUnfullfilledReservations()
+        {
+            return await hotelContext.Reservations
+                .Include(r => r.Guest)
+                .Include(r => r.Rentals)
+                .Where(r => r.Rentals.Count  == 0)
+                .ToListAsync();
         }
 
         [HttpGet("noRentalAllReservations")]

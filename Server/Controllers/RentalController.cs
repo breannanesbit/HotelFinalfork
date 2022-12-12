@@ -19,12 +19,28 @@ namespace HotelFinal.Server.Controllers
             this.hotelContext = hotelContext;
         }
 
+        [HttpPost("checkout")]
+        public async Task PostRentalCheckout(Rental rental)
+        {
+            rental.Checkout = DateOnly.FromDateTime(DateTime.Now);
+            hotelContext.Rentals.Update(rental);
+            await hotelContext.SaveChangesAsync();
+        }
+
         [HttpGet("{reservationId}")]
         public async Task<Rental> GetRentalsForReservation(int reservationId)
         {
             return await hotelContext.Rentals
                 .Where(r => r.ReservationId== reservationId)
                 .FirstOrDefaultAsync();
+        }
+
+        [HttpGet("checkedIn")]
+        public async Task<List<Rental>> GetCheckedInRentals()
+        {
+            return await hotelContext.Rentals
+                .Include(r => r.Guest)
+                .Where(r => r.Checkout == null).ToListAsync();
         }
 
         [HttpPost]

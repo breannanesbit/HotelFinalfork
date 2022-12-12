@@ -1,0 +1,55 @@
+﻿@page "/Checkout"
+@using HotelFinal.Client.Components
+@using HotelFinal.Client.Services;
+@using HotelFinal.Shared;
+@inject HotelService hotelService;
+
+<AuthorizeView Roles="Administrator, Staff">
+    <Authorized>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Guest</th>
+                    <th>Checkin date</th>
+                    <th>Checkout date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var rental in CheckedInRentals)
+                {
+                    //var reser = reservationList.Find(res.Reservation);
+                    <tr>
+                        <td>@rental.Guest.LastName</td>
+                        <td>@rental.Checkin</td>
+                        <td>@rental.Checkout</td>
+                        <td>
+                            <button class="btn btn-primary"
+                                @onclick="() => CheckoutGuest(rental)">
+                                Checkout
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedAlert />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    public List<Rental> CheckedInRentals { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        CheckedInRentals = await hotelService.GetCheckedInRentals();
+    }
+
+    public async Task CheckoutGuest(Rental rental)
+    {
+        await hotelService.CheckoutGuest(rental);
+        CheckedInRentals = await hotelService.GetCheckedInRentals();
+    }
+}

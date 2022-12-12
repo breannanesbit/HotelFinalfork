@@ -1,0 +1,76 @@
+﻿@page "/CancelReservation"
+@using HotelFinal.Client.Components
+@using HotelFinal.Client.Services;
+@using HotelFinal.Shared;
+@inject HotelService hotelService;
+@inject UserService userService;
+
+<AuthorizeView Roles="Administrator, User">
+    <Authorized>
+        <h3>MyReservations</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Checkin Date</th>
+                    <th>Checkout Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var reservation in UserReservations)
+                {
+                    <tr>
+                        <td>@reservation.ExpectedCheckin</td>
+                        <td>@reservation.ExpectedCheckout</td>
+                        <td>
+                            <div class="btn btn-danger" @onclick="() => CancelReservation(reservation)">
+                                Cancel
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedAlert />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    public List<Reservation> UserReservations { get; set; } = new();
+    private string userId;
+    private string userEmail;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userId = await userService.GetUserId();
+        userEmail = await userService.GetUserEmail();
+
+        UserReservations = await hotelService.GetUnfullfilledReservations();
+        UserReservations = UserReservations
+        .Where(r => r.Guest.FirstName == userId)
+        .Where(r => r.Guest.LastName == userEmail)
+        .ToList();
+    }
+
+    protected async Task CancelReservation(Reservation reservation)
+    {
+        await hotelService.CancelReservation(reservation);
+
+        ReservationConfirmationObject rco = new()
+            {
+                Checkin = reservation.ExpectedCheckin.ToString("yyyy-MM-dd"),
+                Checkout = reservation.ExpectedCheckout.ToString("yyyy-MM-dd"),
+                UserEmail = userEmail
+            };
+
+        await hotelService.SendCancellationConfirmation(rco);
+
+        UserReservations = await hotelService.GetUnfullfilledReservations();
+        UserReservations = UserReservations
+        .Where(r => r.Guest.FirstName == userId)
+        .Where(r => r.Guest.LastName == userEmail)
+        .ToList();
+    }
+}

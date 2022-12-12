@@ -61,5 +61,26 @@ namespace HotelFinal.Server.Controllers
             var response = await mailClient.SendTransactionalEmailAsync(email);
             logger.LogInformation($"Sent reservation confirmation to {rco.UserEmail}");
         }
+
+        [HttpPost("reservationCancellation")]
+        public async Task SendReservationCancellationEmail(ReservationConfirmationObject rco)
+        {
+            var email = new TransactionalEmailBuilder()
+                   .WithFrom(new SendContact("anthony.hardman@students.snow.edu"))
+                   .WithSubject("Your Reservation Has Been Cancelled")
+                   .WithHtmlPart(
+                    @$"
+                        <h1>Reservation Cancellation</h1>
+                        <p>
+                            Your reservation for {rco.Checkin} to {rco.Checkout} has been cancelled.
+                        </p>
+                    ")
+                   .WithTo(new SendContact(rco.UserEmail))
+                   .Build();
+
+            // invoke API to send email
+            var response = await mailClient.SendTransactionalEmailAsync(email);
+            logger.LogInformation($"Sent cancellation confirmation to {rco.UserEmail}");
+        }
     }
 }

@@ -72,6 +72,11 @@ namespace HotelFinal.Client.Services
             return res;
         }
 
+        public async Task<List<Reservation>> GetUnfullfilledReservations()
+        {
+            return await httpClient.GetFromJsonAsync<List<Reservation>>("/api/reservation/unfulfilled");
+        }
+
         public async Task PostReservationsAsync(ReservationPostObject rpo)
         {
             await httpClient.PostAsJsonAsync<ReservationPostObject>("/api/reservation", rpo);
@@ -82,12 +87,20 @@ namespace HotelFinal.Client.Services
             await httpClient.PostAsJsonAsync<ReservationConfirmationObject>("/api/email/reservationConfirmation", rco);
         }
 
+        public async Task SendCancellationConfirmation(ReservationConfirmationObject rco)
+        {
+            await httpClient.PostAsJsonAsync<ReservationConfirmationObject>("/api/email/reservationCancellation", rco);
+        }
+
         public async Task<List<Reservation>> AllReservationsWithoutRentals()
         {
             return await httpClient.GetFromJsonAsync<List<Reservation>>("/api/Reservation/noRentalAllReservations");
         }
 
-
+        public async Task CancelReservation(Reservation reservation)
+        {
+            await httpClient.PostAsJsonAsync<Reservation>("/api/Reservation/cancel", reservation);
+        }
         // Guests
         // ------
         public async Task<Guest> GetGuestAsync(string firstname, string lastname)
@@ -156,6 +169,16 @@ namespace HotelFinal.Client.Services
         public async Task<Rental> GetReservationRental(int reservationId)
         {
             return await httpClient.GetFromJsonAsync<Rental>($"/api/rental/{reservationId}");
+        }
+
+        public async Task CheckoutGuest(Rental rental)
+        {
+            await httpClient.PostAsJsonAsync<Rental>($"/api/rental/checkout", rental);
+        }
+
+        public async Task<List<Rental>> GetCheckedInRentals()
+        {
+            return await httpClient.GetFromJsonAsync<List<Rental>>($"/api/rental/checkedin");
         }
     }
 }
