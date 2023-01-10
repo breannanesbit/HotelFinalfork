@@ -13,10 +13,12 @@ namespace HotelFinal.Server.Controllers
     public class RentalController : ControllerBase
     {
         private readonly HotelContext hotelContext;
+        private readonly ILogger logger;
 
-        public RentalController(HotelContext hotelContext)
+        public RentalController(HotelContext hotelContext, ILogger logger)
         {
             this.hotelContext = hotelContext;
+            this.logger = logger;
         }
 
         [HttpPost("checkout")]
@@ -88,6 +90,7 @@ namespace HotelFinal.Server.Controllers
                 };
 
                rentalRooms.Add(room);
+                logger.LogInformation("rental for {room} was complete", room);
             }
 
             
