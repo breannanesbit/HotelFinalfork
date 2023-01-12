@@ -13,9 +13,9 @@ namespace HotelFinal.Server.Controllers
     public class RentalController : ControllerBase
     {
         private readonly HotelContext hotelContext;
-        private readonly ILogger logger;
+        private readonly ILogger<RentalController> logger;
 
-        public RentalController(HotelContext hotelContext, ILogger logger)
+        public RentalController(HotelContext hotelContext, ILogger<RentalController> logger)
         {
             this.hotelContext = hotelContext;
             this.logger = logger;

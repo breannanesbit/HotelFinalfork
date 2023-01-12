@@ -5,11 +5,17 @@ using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+var tracePath = Path.Join(path, $"Log_RentalControllor{DateTime.Now.ToString("yyyyMMdd-HHmm")}.txt");
+Trace.Listeners.Add(new TextWriterTraceListener(System.IO.File.CreateText(tracePath)));
+Trace.AutoFlush= true;
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, c =>
