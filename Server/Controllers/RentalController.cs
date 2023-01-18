@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Syncfusion.Blazor.Data;
+using System.Diagnostics;
 
 namespace HotelFinal.Server.Controllers
 {
@@ -14,11 +15,13 @@ namespace HotelFinal.Server.Controllers
     {
         private readonly HotelContext hotelContext;
         private readonly ILogger<RentalController> logger;
+        private readonly ILogger factory;
 
-        public RentalController(HotelContext hotelContext, ILogger<RentalController> logger)
+        public RentalController(HotelContext hotelContext, ILogger<RentalController> logger, ILoggerFactory factory)
         {
             this.hotelContext = hotelContext;
             this.logger = logger;
+            this.factory = factory.CreateLogger("Rental");
         }
 
         [HttpPost("checkout")]
@@ -48,6 +51,8 @@ namespace HotelFinal.Server.Controllers
         [HttpPost]
         public async Task<bool> CreateRental(RentalCreationObject rco)
         {
+            var timer = new Stopwatch();
+            timer.Start();
             rco.Reservation = await hotelContext.Reservations
                 .Include(r => r.ReservationRooms)
                 .Where(r => r.Id== rco.Reservation.Id).FirstOrDefaultAsync();
@@ -100,6 +105,9 @@ namespace HotelFinal.Server.Controllers
                 await hotelContext.RentalRooms.AddAsync(room);
                 await hotelContext.SaveChangesAsync();
             }
+
+            timer.Stop();
+            factory.LogInformation("took (ticks) ticks to complete", timer.ElapsedTicks);
 
             return true;
         }

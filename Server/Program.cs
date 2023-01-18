@@ -1,3 +1,4 @@
+using Hellang.Middleware.ProblemDetails;
 using HotelFinal.Server;
 using HotelFinal.Shared;
 using Mailjet.Client;
@@ -9,6 +10,18 @@ using System.Diagnostics;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddProblemDetails(opts =>
+{
+    opts.IncludeExceptionDetails = (ctx, ex) => false;
+    opts.OnBeforeWriteDetails = (ctx, dtls) => { 
+        if(dtls.Status == 500)
+        {
+            dtls.Detail = "an error occured in the api or server";
+        }
+    };
+}
+);
 
 // Add services to the container.
 
@@ -36,6 +49,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+app.UseProblemDetails();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
