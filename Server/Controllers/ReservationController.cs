@@ -9,7 +9,7 @@ namespace HotelFinal.Server.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class ReservationController : ControllerBase
+    public partial class ReservationController : ControllerBase
     {
         private readonly HotelContext hotelContext;
         private readonly ILogger<ReservationController> ilogger;
@@ -82,9 +82,18 @@ namespace HotelFinal.Server.Controllers
             var list =  await hotelContext.ReservationRooms.Include(r => r.Reservation)
                 .Include(r => r.RoomType)
                 .ToListAsync();
-            ilogger.LogDebug("made it to the reservationroom");
+
+            var userName = User.Identity?.IsAuthenticated ?? false ? User.Identity.Name : "";
+            using (ilogger.BeginScope("ScopeUser: {scopeUser}, ScopedCat: {scopedCat}", userName, "reservation")) ;
+            {
+                //ilogger.LogInformation("made it to the reservationroom to {userName}", userName);
+                LogResveration();
+            }
             return list;
         }
+
+        [LoggerMessage(1, LogLevel.Information, "made it to the reservation room")]
+        partial void LogResveration();
 
         [HttpGet("allroomtype")]
         public async Task<List<RoomType>> AllRoomstypeAsync()
