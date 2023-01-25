@@ -6,10 +6,26 @@ using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using NLog;
+using NLog.Web;
+using Serilog;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddJsonConsole();
+builder.Logging.AddDebug();
+
+
+builder.Host.UseSerilog((context, loggerConfig) =>
+{
+    loggerConfig.WriteTo.Console().WriteTo.Seq("https://localhost:5324");
+
+});
+
+NLog.LogManager.Setup().LoadConfigurationFromFile;
+builder.Host.UseNLog();
 
 builder.Services.AddProblemDetails(opts =>
 {
