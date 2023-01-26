@@ -15,7 +15,12 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddJsonConsole();
-builder.Logging.AddDebug();
+builder.Logging.AddDebug(); 
+
+builder.Logging.AddSimpleConsole();
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<HotelContext>();
+// builder.Services.AddApplicationInsightsTelemetry();
 
 
 builder.Host.UseSerilog((context, loggerConfig) =>
@@ -24,7 +29,7 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 
 });
 
-NLog.LogManager.Setup().LoadConfigurationFromFile;
+//NLog.LogManager.Setup().LoadConfigurationFromFile;
 builder.Host.UseNLog();
 
 builder.Services.AddProblemDetails(opts =>
@@ -93,5 +98,7 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+
+app.MapHealthChecks("health").AllowAnonymous();
 
 app.Run();
