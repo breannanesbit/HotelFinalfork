@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
 using Serilog;
+using Serilog.Enrichers.Span;
+using Serilog.Exceptions;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 
@@ -18,10 +20,19 @@ builder.Logging.AddJsonConsole();
 builder.Logging.AddDebug(); 
 
 builder.Logging.AddSimpleConsole();
-builder.Services.AddHealthChecks()
-    .AddDbContextCheck<HotelContext>();
+/*builder.Services.AddHealthChecks()
+    .AddDbContextCheck<HotelContext>();*/
 // builder.Services.AddApplicationInsightsTelemetry();
 
+builder.Host.UseSerilog((context, LoggerConfig) =>
+{
+    LoggerConfig.ReadFrom.Configuration(context.Configuration)
+    .WriteTo.Console()
+    .Enrich.WithExceptionDetails()
+    .Enrich.FromLogContext()
+    .Enrich.With<ActivityEnricher>()
+    .WriteTo.Seq("http://localhost:5321");
+});
 
 builder.Host.UseSerilog((context, loggerConfig) =>
 {
